@@ -1,0 +1,23 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>books</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/s.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+</head>
+<body>
+  <!-- <script src="{% static 'js/js_q.js' %}"></script> -->
+{% block 'content' %}
+<table id="keywords" cellspacing="0" cellpadding="0">
+  <thead>
+    <tr>
+      <th><span><a href="book"> Book Inventory</a></span></th>
+      <th><span>Publisher Details</span></th>
+      <th><span>Author Data</span></th>
+    </tr>
+  </thead>
+</table>
+{% endblock %}
+</body>
+</html>

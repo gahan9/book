@@ -1,0 +1,40 @@
+{% extends 'index.html' %}
+{% block 'content' %}
+    <head>         
+    <title>Book Search</title>     
+    </head>     
+    <body>
+        <div id="wrapper">       
+         {% if books %}           
+            <h1>Found {{ books|length }} book{{ books|pluralize }} in matching criteria</h1>
+            <ul>                              
+                    <table id="keywords" cellspacing="0" cellpadding="0">
+                        <thead>
+                          <tr>
+                            <th><span>ID</span></th>
+                            <th><span>Book Name</span></th>
+                            <th><span>Author</span></th>
+                            <th><span>Publisher</span></th>
+                            <th><span>Price</span></th>
+                          </tr>
+                        </thead>
+                {% for b in books %}        
+                        <tbody>
+                          <tr>
+                            <td class="lalign">{{ b.id }}</td>
+                            <td>{{ b.name }}</td>
+                            <td>{% for auth in b.author.all %}{{ auth }},{% endfor %}</td>
+                            <td>{{ b.pub }}</td>
+                            <td>{{ b.price }}</td>
+                          </tr>
+                        </tbody>
+                {% endfor %}           
+                    </table>
+
+            </ul>       
+        {% else %}           
+            <p>No books matched your search criteria.</p>       
+        {% endif %}
+    </div>     
+    </body>
+{% endblock %}
