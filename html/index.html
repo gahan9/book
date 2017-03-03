@@ -3,21 +3,33 @@
 <html>
 <head>
   <title>books</title>
-  <link rel="stylesheet" type="text/css" href="{% static 'css/s.css' %}">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/s.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
 </head>
 <body>
-  <!-- <script src="{% static 'js/js_q.js' %}"></script> -->
+
+<nav class="navbar navbar-default">
+    <table id="keywords" cellspacing="0" cellpadding="0">
+        <thead>
+            <tr>
+              <th><span><a style="color: #3E3E3F " href="/">Book Inventory</a></span></th>
+              <th><span><a style="color: #3E3E3F " href="/password_change">Change Password</a></span></th>
+              <th><span><a style="color: #3E3E3F " href="/logout">Logout</a></span></th>
+            </tr>
+        </thead>
+    </table>
+</nav>
 {% block 'content' %}
-<table id="keywords" cellspacing="0" cellpadding="0">
-  <thead>
-    <tr>
-      <th><span><a href="book"> Book Inventory</a></span></th>
-      <th><span>Publisher Details</span></th>
-      <th><span>Author Data</span></th>
-    </tr>
-  </thead>
-</table>
+{#<table id="keywords" cellspacing="0" cellpadding="0">#}
+{#  <thead>#}
+{#    <tr>#}
+{#      <th><span><a href="book"> Book Inventory</a></span></th>#}
+{#      <th><span>Publisher Details</span></th>#}
+{#      <th><span>Author Data</span></th>#}
+{#    </tr>#}
+{#  </thead>#}
+{#</table>#}
 {% endblock %}
 </body>
 </html>

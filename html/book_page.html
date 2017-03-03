@@ -1,0 +1,19 @@
+{% include 'index.html' %}
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>Books</title>
+</head>
+{% block 'content' %}
+<div id="wrapper" style="width: auto;">
+{% for p in product %}
+    <img src="{% static '/media/images/'%}{{ p.image }}" alt="No image"
+         style="float: left; width: 150px; height: 150px">
+        <h1>{{ p.name }}</h1>
+        <p style="font-size: large; padding-left: 25%">Published By {{ p.pub }}
+        <br>Written By: {% for a in p.author.all %}{{ a }}{% endfor %}
+        <br>Price : ₹ {{ p.price }}
+        <br>Expert Rating : {{ p.rating }}
+{% endfor %}
+</div>
+{% endblock %}

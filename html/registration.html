@@ -1,0 +1,84 @@
+{#{% block body_block %}#}
+{#<h1>Register Here</h1>#}
+{#        <form method="post" action=".">#}
+{#                {% csrf_token %}#}
+{#                {{ form.as_p }}#}
+{##}
+{#                <input type="submit" value="Submit" />#}
+{#        </form>#}
+{#{% endblock %}#}
+
+{% load static %}
+
+
+
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/demo.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style2.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/animate-custom.css' %}" />
+</head>
+
+{% block 'content' %}
+
+
+    <div class="container">
+    <header>
+        <h1> Register <span></span></h1>
+        <nav class="codrops-demos">
+            <span><strong></strong></span>
+        </nav>
+    </header>
+    <section>
+    <div id="container_demo" >
+        <a class="hiddenanchor" id="toregister"></a>
+        <a class="hiddenanchor" id="tologin"></a>
+        <div id="wrapper">
+            <div id="login" class="animate form">
+
+    <form autocomplete="on" method="post">
+        {% csrf_token %}
+                    <h1> Sign up </h1>
+                    <p>
+                        <label for="usernamesignup" class="uname" data-icon="u">Your username</label>
+                        {{ form.username }}
+{#                        {% if form.errors %}#}
+                        {{ form.username.errors }}
+{#                        {% endif %}#}
+                    </p>
+                    <p>
+                        <label for="emailsignup" class="youmail" data-icon="e" > Your email</label>
+                        {{ form.email }}
+{#                        {% if form.errors %}#}
+                            {{ form.email.errors }}
+{#                        {% endif %}#}
+                    </p>
+                    <p>
+                        <label for="passwordsignup" class="youpasswd" data-icon="p">Your password </label>
+                        {{ form.password1 }}
+                    </p>
+                    <p>
+                        <label for="passwordsignup_confirm" class="youpasswd" data-icon="p">Please confirm your password </label>
+                        {{ form.password2 }}
+{#                        {% if SignUpForm.password1 != SignUpForm.password2 %}<p>Password not matched...</p>{% endif %}#}
+                    </p>
+{#                        {% if form.errors %}#}
+                        {{ form.password1.errors }}
+                        {{ form.password2.errors }}
+{#                        {% endif %}#}
+                    <p class="signin button">
+                        <input type="submit" value="Sign up"/>
+                    </p>
+                    <p class="change_link">
+                        Already a member ?
+                        <a href="{% url 'login' %}"> Go and log in </a>
+                    </p>
+
+                </form>
+            </div>
+        </div>
+    </div>
+    </section>
+</div>
+    <a href="/"></a>
+
+{% endblock %}
