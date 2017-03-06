@@ -22,7 +22,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'details',
+
+    'django.contrib.admindocs',
     'registration',
+    'django_otp',
+    'django_otp.plugins.otp_hotp',
+    'django_otp.plugins.otp_totp',
+    'django_otp.plugins.otp_static',
 ]
 
 MIDDLEWARE = [
@@ -33,6 +39,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_otp.middleware.OTPMiddleware',
+
 ]
 
 ROOT_URLCONF = 'book.urls'
@@ -119,6 +127,12 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+#Session expiry
+# SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_AGE = 15 * 60
+# SESSION_IDLE_TIMEOUT = 3
 
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
