@@ -1,9 +1,12 @@
+import django_otp, time
 from django.shortcuts import render, render_to_response
 from django.http import HttpResponseRedirect, HttpResponse, Http404, request
 from django.contrib.auth.models import User
 from django.views.generic.edit import FormView
 from django.contrib.auth.decorators import login_required
 from django.forms import *
+from django_otp.views import login
+from django_otp.decorators import otp_required
 
 from .forms import SignUpForm, ChangePassword
 from .models import Author, Publisher, book
@@ -49,10 +52,12 @@ def product_page(request, book_id):
         error = 'You have encountered incorrect product page'
         return render(request, 'error.html', {'error': error})
 
+
 @login_required(login_url='login/')
+# @otp_required(login_url='login/')
 def index(request):
     """	Show all data from database """
-    bl = book.objects.all().order_by('name')
+    bl = book.objects.all().order_by('id')
     return render(request, 'book.html', {'bl': bl})
 
 

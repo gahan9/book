@@ -21,9 +21,11 @@ class Publisher(models.Model):
 
 class Author(models.Model):
     name = models.CharField(max_length=100)
+    maximum_book = models.IntegerField(default=0)
+    minimum_book = models.IntegerField(default=0)
 
     def __str__(self):
-        return self.name
+        return self.name.count()
 
 
 class book(models.Model):
@@ -33,6 +35,7 @@ class book(models.Model):
     rating = models.FloatField(null=True, blank=True)
     pub = models.ForeignKey(Publisher)
     price = models.FloatField(validators=[MinValueValidator(0.9)])
+    published_date = models.DateField(null=True)
 
     def __str__(self):
         return self.name
