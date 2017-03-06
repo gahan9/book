@@ -10,7 +10,7 @@ height: 29px;width: 80px;margin: 0%; padding: 0;font-size: 15px;background-color
 }
 </style>
     <p style="color: #2c3e50; font-size: large;font-family: Roboto; "><span>You are Logged in as {{ user.username }}</span></p>
-<div id="wrapper" style="width: auto; overflow: auto; overflow-x: auto">
+<div id="wrapper" style="width: 80%; overflow: auto; height: 90%;">
   <h1>Book Inventory</h1>
 <form action="/search/" method="get">
   <table style="overflow-y: auto" id="keywords" cellspacing="0" cellpadding="0">
@@ -55,5 +55,5 @@ height: 29px;width: 80px;margin: 0%; padding: 0;font-size: 15px;background-color
   </table>
 <input type="submit" value="Go">
 </form>
- </div> 
+ </div>
 {% endblock %}
