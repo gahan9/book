@@ -1,0 +1,15 @@
+{% load i18n %}{% autoescape off %}
+
+{% blocktrans %}Hi  {{ user }},{% endblocktrans %}
+{% blocktrans %}You're receiving this email because you have created account on our site {{ domain }}.{% endblocktrans %}
+
+{% trans "Please go to the following page and activate your account:" %}
+{% block link %}
+http://{{ domain }}{% url 'activate_user' pk=pk token=token %}
+{#{{ protocol }}://{{ domain }}{% url 'password_reset_confirm' pk=pk token=token %}#}
+{% endblock %}
+
+{% trans "Thanks for registering on our site!" %}
+
+{% blocktrans %}Admin{% endblocktrans %}
+{% endautoescape %}

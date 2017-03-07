@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.contrib.auth.tokens import PasswordResetTokenGenerator as activation_user
+from django.template import loader
 from django.urls import reverse
 
 from .forms import SignUpForm, ChangePassword
@@ -24,15 +25,24 @@ def register(request):
             new_user.is_active = False
             new_user.save()
             new_user_token = activation_user().make_token(new_user)
-            url = reverse('activate_user',kwargs={'pk':new_user.id,'token':new_user_token})
+            # url = reverse('activate_user',
+            # kwargs={'pk':new_user.id, 'token':new_user_token})
             host = request.get_host()
-            var_url = 'http://'+ host + url
+            # var_url = 'http://'+ host + url
+            # var_url = host + url
+
             # context = {'user': new_user, 'token': new_user_token}
             # email_message = EmailMultiAlternatives("Activate yourself",
             #  loader.render_to_string('error.html', context),
             # 'gahan@quixom.com', ['gahan@quixom.com'])
             # email_message.send()
-            send_mail("Activate YOur Account", var_url, 'gahan@quixom.com',
+            send_mail("Activate YOur Account",
+                      loader.render_to_string('user_activate.html',
+                                              {'pk':new_user.id,
+                                               'token':new_user_token,
+                                               'domain':host,
+                                               'user': new_user_name}),
+                      'gahan@quixom.com',
                       ['gahan@quixom.com'])
             # print(dir(new_user), new_user.natural_key(), sep='\n')
             return HttpResponseRedirect('/login/')
@@ -81,10 +91,9 @@ def product_page(request, book_id):
 
 
 @login_required(login_url='login/')
-# @otp_required(login_url='login/')
 def index(request):
     """	Show all data from database """
-    bl = book.objects.all().order_by('id')
+    bl = book.objects.all().order_by('-id')
     return render(request, 'book.html', {'bl': bl})
 
 
