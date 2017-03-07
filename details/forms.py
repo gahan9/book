@@ -1,8 +1,6 @@
 from django import forms
-from django.forms import ModelForm
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, PasswordResetForm
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import User
 from django.contrib.auth import password_validation
 
 
@@ -19,7 +17,7 @@ class LoginForm(AuthenticationForm):
                                           'type': 'password'}))
 
 
-class SignUpForm(UserCreationForm):
+class SignUpForm(UserCreationForm, PasswordResetForm):
     username = forms.CharField(
         label="Username",
         max_length=30,

@@ -25,7 +25,7 @@ class Author(models.Model):
     minimum_book = models.IntegerField(default=0)
 
     def __str__(self):
-        return self.name.count()
+        return self.name
 
 
 class book(models.Model):

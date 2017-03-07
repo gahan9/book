@@ -23,12 +23,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'details',
 
-    'django.contrib.admindocs',
-    'registration',
-    'django_otp',
-    'django_otp.plugins.otp_hotp',
-    'django_otp.plugins.otp_totp',
-    'django_otp.plugins.otp_static',
+    # 'django.contrib.admindocs',
+    # 'registration',
+    # 'django_otp',
+    # 'django_otp.plugins.otp_hotp',
+    # 'django_otp.plugins.otp_totp',
+    # 'django_otp.plugins.otp_static',
 ]
 
 MIDDLEWARE = [
@@ -133,6 +133,17 @@ USE_TZ = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_COOKIE_AGE = 15 * 60
 # SESSION_IDLE_TIMEOUT = 3
+PASSWORD_RESET_TIMEOUT_DAYS = 1
+
+#Email Support
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'test.gahan@gmail.com'
+EMAIL_HOST_PASSWORD = 'r@123456'
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
 
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
