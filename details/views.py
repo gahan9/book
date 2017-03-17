@@ -78,7 +78,7 @@ def change_password(request):
 
 # @login_required(login_url='login/')
 def product_page(request, book_id):
-    product = book.objects.get(pk=book_id)
+    product = Book.objects.get(pk=book_id)
     current_user = request.user.username
     rated_stat = BookRating.objects.filter(user__username=current_user, book__id=book_id).values()
     print(product, type(product), rated_stat, type(rated_stat))
@@ -123,7 +123,7 @@ def product_page(request, book_id):
 @login_required(login_url='login/')
 def index(request):
     """	Show all data from database """
-    bl = book.objects.all().order_by('-id')
+    bl = Book.objects.all().order_by('-id')
     return render(request, 'book.html', {'bl': bl})
 
 
@@ -145,7 +145,7 @@ def search(request):
     id_ = request.GET.get('id', None)
 
     if req_data:
-        books = book.objects.filter(**req_data)
+        books = Book.objects.filter(**req_data)
         return render(request, 'results.html', {'books': books},
                       {'query': id_})
     else:
@@ -153,10 +153,10 @@ def search(request):
         return render(request, 'error.html', {'error': error})
 
 
-        # def user_rating(request, book_id):
-        #     product = book.objects.get(pk=book_id)
+        # def user_rating(request, Book_id):
+        #     product = Book.objects.get(pk=book_id)
         #     current_user_rated = request.GET.get('user_rated', default=1)
-        #     # current_average_rating = book.objects.filter(pk=book_id).values('user_rating').get()
+        #     # current_average_rating = Book.objects.filter(pk=book_id).values('user_rating').get()
         #     print(product, type(current_user_rated), type(product.user_rating), sep='\n')
         #     if current_user_rated:
         #         new_rate = (product.user_rating + current_user_rated['user_rated'])/2

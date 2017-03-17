@@ -8,7 +8,7 @@ admin.site.register(Publisher)
 class BookAdmin(admin.ModelAdmin):
     list_display = ('name', 'price', 'pub', 'rating', 'published_date')
 
-admin.site.register(book, BookAdmin)
+admin.site.register(Book, BookAdmin)
 
 
 class AuthorAdmin(admin.ModelAdmin):

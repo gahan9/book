@@ -26,7 +26,7 @@ class Author(models.Model):
         return self.name
 
 
-class book(models.Model):
+class Book(models.Model):
     name = models.CharField(max_length=50, verbose_name='Book Name')
     image = models.ImageField(null=True, blank=True, verbose_name='Book Image')
     author = models.ManyToManyField(Author)
@@ -43,7 +43,7 @@ class book(models.Model):
 class BookRating(models.Model):
     user = models.ForeignKey(User, related_name='profile')
     rating = models.IntegerField()
-    book = models.ForeignKey(book, related_name='book_rating')
+    book = models.ForeignKey(Book, related_name='book_rating')
     created = models.DateTimeField(auto_now=True)
 
     def __str__(self):
