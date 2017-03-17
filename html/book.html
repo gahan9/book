@@ -12,8 +12,8 @@ height: 29px;width: 80px;margin: 0%; padding: 0;font-size: 15px;background-color
     <p style="color: #2c3e50; font-size: large;font-family: Roboto; "><span>You are Logged in as {{ user.username }}</span></p>
 <div id="wrapper" style="width: 80%; overflow: auto; height: 90%;">
   <h1>Book Inventory</h1>
-<form action="/search/" method="get">
-  <table style="overflow-y: auto" id="keywords" cellspacing="0" cellpadding="0">
+<form action="{% url 'search' %}" method="get">
+  <table style="overflow-y: auto;" id="keywords" cellspacing="0" cellpadding="0">
     <thead>
       <tr>
         <th><span>ID</span></th>
@@ -21,6 +21,7 @@ height: 29px;width: 80px;margin: 0%; padding: 0;font-size: 15px;background-color
         <th><span>Author</span></th>
         <th><span>Publisher</span></th>
         <th><span>Price</span></th>
+{#        <th><span>User Rating</span></th>#}
       </tr>
     </thead>    
     <tbody>
@@ -30,7 +31,6 @@ height: 29px;width: 80px;margin: 0%; padding: 0;font-size: 15px;background-color
       </td>
       <td>
           <input type="text" name="name">
-        </form>
       </td>
       <td>
           <input type="text" name="author">
@@ -49,6 +49,7 @@ height: 29px;width: 80px;margin: 0%; padding: 0;font-size: 15px;background-color
         <td>{% for auth in b.author.all %}{{ auth }} <br>{% endfor %}</td>
         <td>{{ b.pub }}</td>
         <td>{{ b.price }}</td>
+{#        <td>{{ user_rating }}</td>#}
       </tr>
       {% endfor %}
     </tbody>

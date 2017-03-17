@@ -131,9 +131,10 @@ USE_TZ = True
 #Session expiry
 # SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-SESSION_COOKIE_AGE = 15 * 60
+# SESSION_COOKIE_AGE = 15 * 60
 # SESSION_IDLE_TIMEOUT = 3
 PASSWORD_RESET_TIMEOUT_DAYS = 1
+# AUTH_PROFILE_MODULE = 'accounts.UserProfile'
 
 #Email Support
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

@@ -6,16 +6,22 @@ from django.core.mail import send_mail
 from django.contrib.auth.tokens import PasswordResetTokenGenerator as activation_user
 from django.template import loader
 from django.urls import reverse
+from django.db.models import Avg, Func
+from decimal import Decimal
 
 from .forms import SignUpForm, ChangePassword
-from .models import Author, Publisher, book
+from .models import *
+
+
+class Round(Func):
+    function = 'ROUND'
+    template = '%(function)s(%(expressions)s, 1)'
 
 
 def register(request):
     if request.method == "POST":
         form = SignUpForm(request.POST)
         if form.is_valid():
-            # form.save()
             new_user_name = form.cleaned_data['username']
             new_user_password = form.cleaned_data['password1']
             new_user_email = form.cleaned_data['email']
@@ -25,26 +31,17 @@ def register(request):
             new_user.is_active = False
             new_user.save()
             new_user_token = activation_user().make_token(new_user)
-            # url = reverse('activate_user',
             # kwargs={'pk':new_user.id, 'token':new_user_token})
             host = request.get_host()
             # var_url = 'http://'+ host + url
-            # var_url = host + url
-
-            # context = {'user': new_user, 'token': new_user_token}
-            # email_message = EmailMultiAlternatives("Activate yourself",
-            #  loader.render_to_string('error.html', context),
-            # 'gahan@quixom.com', ['gahan@quixom.com'])
-            # email_message.send()
             send_mail("Activate YOur Account",
                       loader.render_to_string('user_activate.html',
-                                              {'pk':new_user.id,
-                                               'token':new_user_token,
-                                               'domain':host,
+                                              {'pk': new_user.id,
+                                               'token': new_user_token,
+                                               'domain': host,
                                                'user': new_user_name}),
                       'gahan@quixom.com',
                       ['gahan@quixom.com'])
-            # print(dir(new_user), new_user.natural_key(), sep='\n')
             return HttpResponseRedirect('/login/')
             # else:
             #     x = [v[0] for k, v in form.errors.items()]
@@ -52,9 +49,6 @@ def register(request):
     else:
         form = SignUpForm()
     return render(request, 'registration.html', {'form': form})
-
-# def registration_complete(request):
-#     return render_to_response('book.html')
 
 
 def activate_new_user(request, pk, token):
@@ -67,10 +61,11 @@ def activate_new_user(request, pk, token):
     else:
         return HttpResponse("Invalid Verification Link")
 
+
 def change_password(request):
     if request.method == 'POST':
         current_user = request.user.username
-        reset_form = ChangePassword(request.POST,user=request.user)
+        reset_form = ChangePassword(request.POST, user=request.user)
         if reset_form.is_valid():
             u = User.objects.get(username__exact=current_user)
             u.set_password(reset_form.cleaned_data['password2'])
@@ -81,10 +76,45 @@ def change_password(request):
     return render(request, 'change_password.html', {'reset_form': reset_form})
 
 
+# @login_required(login_url='login/')
 def product_page(request, book_id):
-    product = book.objects.filter(pk=book_id)
-    if product != {}:
-        return render(request, 'book_page.html', {'product': product})
+    product = book.objects.get(pk=book_id)
+    current_user = request.user.username
+    rated_stat = BookRating.objects.filter(user__username=current_user, book__id=book_id).values()
+    print(product, type(product), rated_stat, type(rated_stat))
+
+    if request.method == "POST":
+        current_user_rated = request.POST.get('user_rated', None)
+        print(current_user_rated, type(current_user_rated), sep='\n')
+        if current_user_rated:
+            if not rated_stat.exists():
+                now_rated = BookRating(user=User.objects.get(username=current_user),
+                                       rating=int(current_user_rated),
+                                       book=product)
+                now_rated.save()
+            else:
+                return HttpResponse("You Have already Rated")
+        else:
+            pass
+
+    if product:
+        #Calculates Average Book Rating given by User
+        filter_rating = BookRating.objects.filter(book_id=book_id).aggregate(avg_u_rating=Round(Avg('rating')))['avg_u_rating']
+        product.user_rating = filter_rating
+        product.save()
+
+        #Calculates Publisher Rating
+        pub_rating = Publisher.objects.annotate(pub_avg_rating=Round(Avg('book__book_rating__rating'))).filter(book__id=book_id)[0].pub_avg_rating
+
+        #Calculates Author Rating
+        auth_rating = Author.objects.annotate(author_avg_rating=Round(Avg('book__book_rating__rating'))).filter(book__id=book_id)[0].author_avg_rating
+
+        context = {'p': product,
+                   'user_rating': filter_rating,
+                   'author_rating': auth_rating,
+                   'publisher_rating': pub_rating,
+                   }
+        return render(request, 'book_page.html', context)
     else:
         error = 'You have encountered incorrect product page'
         return render(request, 'error.html', {'error': error})
@@ -121,3 +151,13 @@ def search(request):
     else:
         error = 'No match found'
         return render(request, 'error.html', {'error': error})
+
+
+        # def user_rating(request, book_id):
+        #     product = book.objects.get(pk=book_id)
+        #     current_user_rated = request.GET.get('user_rated', default=1)
+        #     # current_average_rating = book.objects.filter(pk=book_id).values('user_rating').get()
+        #     print(product, type(current_user_rated), type(product.user_rating), sep='\n')
+        #     if current_user_rated:
+        #         new_rate = (product.user_rating + current_user_rated['user_rated'])/2
+        #         return render(request, 'book_page.html', {'product': product})

@@ -4,16 +4,42 @@
     <meta charset="UTF-8">
     <title>Books</title>
 </head>
-{% block 'content' %}
-<div id="wrapper" style="width: auto;">
-{% for p in product %}
+{% block content %}
+<div id="wrapper" style="width: auto; height: 90%;">
     <img src="{% static '/media/images/'%}{{ p.image }}" alt="No image"
          style="float: left; width: 150px; height: 150px">
         <h1>{{ p.name }}</h1>
-        <p style="font-size: large; padding-left: 25%">Published By {{ p.pub }}
-        <br>Written By: {% for a in p.author.all %}{{ a }}{% endfor %}
+        <p style="font-size: large; padding-left: 25%;">Published By {{ p.pub }} (Rated {{ publisher_rating }} out of 5)
+        <br>Written By: {% for a in p.author.all %}{{ a }}{% endfor %} (Rated {{ author_rating }} out of 5)
         <br>Price : ₹ {{ p.price }}
-        <br>Expert Rating : {{ p.rating }}
-{% endfor %}
+        <br>Expert Rating : {{ p.rating }} out of 5
+        <br>User Rating: {{ user_rating }} out of 5
+        <p style="font-size: large; padding-left: 25%;"><br>
+{#        <div class="dropdown">#}
+{#          <button class="dropbtn">Wanna Rate??</button>#}
+{#          <div class="dropdown-content">#}
+{#            <a href="#">1</a>#}
+{#            <a href="#">2</a>#}
+{#            <a href="#">3</a>#}
+{#            <a href="#">4</a>#}
+{#            <a href="#">5</a>#}
+{#          </div>#}
+{#        </div>#}
+        <form action="." method="post">
+            {% csrf_token %}
+            <input type="number" name="user_rated">
+            <input type="submit" value="Rate">
+        </form>
+        </p>
 </div>
+{#        <script src="https://code.jquery.com/jquery-2.2.4.js">#}
+{#        console.log($('input[name=rating-input-2]:checked').val())#}
+{#       $("#rating") // select the radio by its id#}
+{#    .change(function(){ // bind a function to the change event#}
+{#        if( $(this).is(":checked") ){ // check if the radio is checked#}
+{#            var val = $(this).val(); // retrieve the value#}
+{#            console.log(val)#}
+{#        }#}
+{#    });#}
+{#        </script>#}
 {% endblock %}
