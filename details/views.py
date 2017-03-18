@@ -42,7 +42,7 @@ def register(request):
                                               {'pk': new_user.id,
                                                'token': new_user_token,
                                                'domain': host,
-                                               'user': new_user_name}), 'test.gahan@gmail.com', ['gahan@quixom.com'])
+                                               'user': new_user_name}), 'test.gahan@gmail.com', ['gahan@quixom.com', new_user_email])
             return HttpResponseRedirect('/login/')
             # else:
             #     x = [v[0] for k, v in form.errors.items()]
