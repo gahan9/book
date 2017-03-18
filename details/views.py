@@ -8,6 +8,8 @@ from django.template import loader
 from django.urls import reverse
 from django.db.models import Avg, Func
 from decimal import Decimal
+from operator import itemgetter
+
 
 from .forms import SignUpForm, ChangePassword
 from .models import *
@@ -34,14 +36,13 @@ def register(request):
             # kwargs={'pk':new_user.id, 'token':new_user_token})
             host = request.get_host()
             # var_url = 'http://'+ host + url
+
             send_mail("Activate YOur Account",
                       loader.render_to_string('user_activate.html',
                                               {'pk': new_user.id,
                                                'token': new_user_token,
                                                'domain': host,
-                                               'user': new_user_name}),
-                      'gahan@quixom.com',
-                      ['gahan@quixom.com'])
+                                               'user': new_user_name}), 'test.gahan@gmail.com', ['gahan@quixom.com'])
             return HttpResponseRedirect('/login/')
             # else:
             #     x = [v[0] for k, v in form.errors.items()]
@@ -100,14 +101,12 @@ def product_page(request, book_id):
     if product:
         #Calculates Average Book Rating given by User
         filter_rating = BookRating.objects.filter(book_id=book_id).aggregate(avg_u_rating=Round(Avg('rating')))['avg_u_rating']
-        product.user_rating = filter_rating
-        product.save()
 
         #Calculates Publisher Rating
         pub_rating = Publisher.objects.annotate(pub_avg_rating=Round(Avg('book__book_rating__rating'))).filter(book__id=book_id)[0].pub_avg_rating
 
         #Calculates Author Rating
-        auth_rating = Author.objects.annotate(author_avg_rating=Round(Avg('book__book_rating__rating'))).filter(book__id=book_id)[0].author_avg_rating
+        auth_rating = Author.objects.annotate(author_avg_rating=Round(Avg('book__book_rating__rating'))).filter(book__id=book_id)
 
         context = {'p': product,
                    'user_rating': filter_rating,
@@ -123,8 +122,40 @@ def product_page(request, book_id):
 @login_required(login_url='login/')
 def index(request):
     """	Show all data from database """
-    bl = Book.objects.all().order_by('-id')
-    return render(request, 'book.html', {'bl': bl})
+    all_books = Book.objects.all()
+    final_list = []
+    for book in all_books:
+
+        #Calculates Average Book Rating given by User
+        # filter_rating = {"bid": book.id, "u_rating": BookRating.objects.filter(book_id=book.id).aggregate(avg_u_rating=Round(Avg('rating')))['avg_u_rating']}
+        filter_rating = BookRating.objects.filter(book_id=book.id).aggregate(avg_u_rating=Round(Avg('rating')))['avg_u_rating']
+
+        #Calculates Publisher Rating
+        pub_rating = Publisher.objects.annotate(pub_avg_rating=Round(Avg('book__book_rating__rating'))).filter(book__id=book.id)[0].pub_avg_rating
+
+        #Calculates Author Rating
+        auth_rating = Author.objects.annotate(author_avg_rating=Round(Avg('book__book_rating__rating'))).filter(book__id=book.id)
+
+        if filter_rating is None:
+            filter_rating = " Not Rated"
+        else:
+            filter_rating = str(filter_rating)
+        final_query = {"bid": book.id,
+                       "name": book.name,
+                       "author": book.author,
+                       "publisher": book.pub,
+                       "price": book.price,
+                       "u_rating": filter_rating, "p_rating": pub_rating, "a_rating": auth_rating}
+
+        final_list.append(final_query)
+
+    final_list = sorted(final_list, key=itemgetter('u_rating'), reverse=True)
+    context = {'bl': all_books,
+               'fl': final_list,
+               # 'author_rating': auth_rating,
+               # 'publisher_rating': pub_rating,
+               }
+    return render(request, 'book.html', context)
 
 
 def search_form(request):

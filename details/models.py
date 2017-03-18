@@ -27,7 +27,7 @@ class Author(models.Model):
 
 
 class Book(models.Model):
-    name = models.CharField(max_length=50, verbose_name='Book Name')
+    name = models.CharField(max_length=150, verbose_name='Book Name')
     image = models.ImageField(null=True, blank=True, verbose_name='Book Image')
     author = models.ManyToManyField(Author)
     rating = models.DecimalField(null=True, blank=True, verbose_name='Expert Rating', max_digits=2, decimal_places=1)
@@ -42,7 +42,7 @@ class Book(models.Model):
 
 class BookRating(models.Model):
     user = models.ForeignKey(User, related_name='profile')
-    rating = models.IntegerField()
+    rating = models.IntegerField(null=True, blank=True, default=None)
     book = models.ForeignKey(Book, related_name='book_rating')
     created = models.DateTimeField(auto_now=True)
 
