@@ -10,7 +10,7 @@ height: 29px;width: 80px;margin: 0%; padding: 0;font-size: 15px;background-color
 }
 </style>
     <p style="color: #2c3e50; font-size: large;font-family: Roboto; "><span>You are Logged in as {{ user.username }}</span></p>
-<div id="wrapper" style="width: 80%; overflow: auto; height: 90%;">
+<div id="wrapper" style="width: 90%; overflow: auto; height: 90%;">
   <h1>Book Inventory</h1>
 <form action="{% url 'search' %}" method="get">
   <table style="overflow-y: auto;" id="keywords" cellspacing="0" cellpadding="0">
@@ -21,7 +21,7 @@ height: 29px;width: 80px;margin: 0%; padding: 0;font-size: 15px;background-color
         <th><span>Author</span></th>
         <th><span>Publisher</span></th>
         <th><span>Price</span></th>
-{#        <th><span>User Rating</span></th>#}
+        <th><span>User Rating</span></th>
       </tr>
     </thead>    
     <tbody>
@@ -40,25 +40,39 @@ height: 29px;width: 80px;margin: 0%; padding: 0;font-size: 15px;background-color
       </td>
 
       </tr>
-      {% for b in bl %}
+      {% for entry in fl %}
       <tr>
-        <td class="lalign">
-          <a href="product/{{ b.id }}">{{ b.id }}</a>
+        <td>
+          <a style="color: #0c0f79; text-decoration: underline;" href="product/{{ entry.bid }}">{{ entry.bid }}</a>
         </td>
-        <td>{{ b.name }}</td>
-        <td>{% for auth in b.author.all %}{{ auth }} <br>{% endfor %}</td>
-        <td>{{ b.pub }}</td>
-        <td>{{ b.price }}</td>
-{#        <td>{{ user_rating }}</td>#}
+        <td style="overflow-wrap: break-word; max-width: 250px;">{{ entry.name }}</td>
+        <td>{% for auth in entry.author.all %}{{ auth }} <br>{% endfor %}</td>
+        <td>{{ entry.publisher }}</td>
+        <td>{{ entry.price }}</td>
+      {% if entry.u_rating %}
+        <td>{{ entry.u_rating }}</td>
+      {% endif %}
       </tr>
       {% endfor %}
+{#    {% for b in bl %}#}
+{#      <tr>#}
+{#        <td class="lalign">#}
+{#          <a href="product/{{ b.id }}">{{ b.id }}</a>#}
+{#        </td>#}
+{#        <td>{{ b.name }}</td>#}
+{#        <td>{% for auth in b.author.all %}{{ auth }} <br>{% endfor %}</td>#}
+{#        <td>{{ b.pub }}</td>#}
+{#        <td>{{ b.price }}</td>#}
+{#        <td>{{ user_rating }}</td>#}
+{#      </tr>#}
+{#      {% endfor %}#}
     </tbody>
   </table>
 <input type="submit" value="Go">
 </form>
  </div>
     <script>
-    setTimeout(function(){window.location.reload(true);}, 5000);
+{#    setTimeout(function(){window.location.reload(true);}, 5000);#}
 {#    $.ajax({url: '/',#}
 {#        success: function(data)#}
 {#    {$('#wrapper').html(data);  }});#}
