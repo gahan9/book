@@ -40,32 +40,20 @@ height: 29px;width: 80px;margin: 0%; padding: 0;font-size: 15px;background-color
       </td>
 
       </tr>
-      {% for entry in fl %}
+      {% for entry in bl %}
       <tr>
         <td>
-          <a style="color: #0c0f79; text-decoration: underline;" href="product/{{ entry.bid }}">{{ entry.bid }}</a>
+          <a style="color: #0c0f79; text-decoration: underline;" href="product/{{ entry.id }}">{{ entry.id }}</a>
         </td>
         <td style="overflow-wrap: break-word; max-width: 250px;">{{ entry.name }}</td>
         <td>{% for auth in entry.author.all %}{{ auth }} <br>{% endfor %}</td>
-        <td>{{ entry.publisher }}</td>
+        <td>{{ entry.pub }}</td>
         <td>{{ entry.price }}</td>
       {% if entry.u_rating %}
         <td>{{ entry.u_rating }}</td>
       {% endif %}
       </tr>
       {% endfor %}
-{#    {% for b in bl %}#}
-{#      <tr>#}
-{#        <td class="lalign">#}
-{#          <a href="product/{{ b.id }}">{{ b.id }}</a>#}
-{#        </td>#}
-{#        <td>{{ b.name }}</td>#}
-{#        <td>{% for auth in b.author.all %}{{ auth }} <br>{% endfor %}</td>#}
-{#        <td>{{ b.pub }}</td>#}
-{#        <td>{{ b.price }}</td>#}
-{#        <td>{{ user_rating }}</td>#}
-{#      </tr>#}
-{#      {% endfor %}#}
     </tbody>
   </table>
 <input type="submit" value="Go">
