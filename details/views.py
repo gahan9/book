@@ -152,12 +152,3 @@ def search(request):
         error = 'No match found'
         return render(request, 'error.html', {'error': error})
 
-
-        # def user_rating(request, Book_id):
-        #     product = Book.objects.get(pk=book_id)
-        #     current_user_rated = request.GET.get('user_rated', default=1)
-        #     # current_average_rating = Book.objects.filter(pk=book_id).values('user_rating').get()
-        #     print(product, type(current_user_rated), type(product.user_rating), sep='\n')
-        #     if current_user_rated:
-        #         new_rate = (product.user_rating + current_user_rated['user_rated'])/2
-        #         return render(request, 'book_page.html', {'product': product})
