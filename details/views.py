@@ -80,8 +80,8 @@ def change_password(request):
 # @login_required(login_url='login/')
 def product_page(request, book_id):
     product = Book.objects.get(pk=book_id)
-    current_user = request.user.username
-    rated_stat = BookRating.objects.filter(user__username=current_user, book__id=book_id).values()
+    current_user = request.user
+    rated_stat = BookRating.objects.filter(user=current_user, book__id=book_id).values()
     print(product, type(product), rated_stat, type(rated_stat))
 
     if request.method == "POST":
@@ -89,7 +89,7 @@ def product_page(request, book_id):
         print(current_user_rated, type(current_user_rated), sep='\n')
         if current_user_rated:
             if not rated_stat.exists():
-                now_rated = BookRating(user=User.objects.get(username=current_user),
+                now_rated = BookRating.objects.create(user=current_user,
                                        rating=int(current_user_rated),
                                        book=product)
                 now_rated.save()
@@ -122,39 +122,8 @@ def product_page(request, book_id):
 @login_required(login_url='login/')
 def index(request):
     """	Show all data from database """
-    all_books = Book.objects.all()
-    final_list = []
-    for book in all_books:
-
-        #Calculates Average Book Rating given by User
-        # filter_rating = {"bid": book.id, "u_rating": BookRating.objects.filter(book_id=book.id).aggregate(avg_u_rating=Round(Avg('rating')))['avg_u_rating']}
-        filter_rating = BookRating.objects.filter(book_id=book.id).aggregate(avg_u_rating=Round(Avg('rating')))['avg_u_rating']
-
-        #Calculates Publisher Rating
-        pub_rating = Publisher.objects.annotate(pub_avg_rating=Round(Avg('book__book_rating__rating'))).filter(book__id=book.id)[0].pub_avg_rating
-
-        #Calculates Author Rating
-        auth_rating = Author.objects.annotate(author_avg_rating=Round(Avg('book__book_rating__rating'))).filter(book__id=book.id)
-
-        if filter_rating is None:
-            filter_rating = " Not Rated"
-        else:
-            filter_rating = str(filter_rating)
-        final_query = {"bid": book.id,
-                       "name": book.name,
-                       "author": book.author,
-                       "publisher": book.pub,
-                       "price": book.price,
-                       "u_rating": filter_rating, "p_rating": pub_rating, "a_rating": auth_rating}
-
-        final_list.append(final_query)
-
-    final_list = sorted(final_list, key=itemgetter('u_rating'), reverse=True)
-    context = {'bl': all_books,
-               'fl': final_list,
-               # 'author_rating': auth_rating,
-               # 'publisher_rating': pub_rating,
-               }
+    all_books = Book.objects.all().annotate(u_rating=Round(Avg('book_rating__rating'))).order_by('-u_rating')
+    context = {'bl': all_books}
     return render(request, 'book.html', context)
 
 
