@@ -20,6 +20,14 @@ class Round(Func):
     template = '%(function)s(%(expressions)s, 1)'
 
 
+@login_required(login_url='login/')
+def index(request):
+    """	Show all data from database """
+    all_books = Book.objects.all().annotate(u_rating=Round(Avg('book_rating__rating'))).order_by('-u_rating')
+    context = {'bl': all_books}
+    return render(request, 'book.html', context)
+
+
 def register(request):
     if request.method == "POST":
         form = SignUpForm(request.POST)
@@ -119,17 +127,39 @@ def product_page(request, book_id):
         return render(request, 'error.html', {'error': error})
 
 
-@login_required(login_url='login/')
-def index(request):
-    """	Show all data from database """
-    all_books = Book.objects.all().annotate(u_rating=Round(Avg('book_rating__rating'))).order_by('-u_rating')
-    context = {'bl': all_books}
-    return render(request, 'book.html', context)
+def publisher_page(request, publisher_id):
+    selected_publisher = Publisher.objects.get(pk=publisher_id).book_set.annotate(user_rating=Round(Avg('book_rating__rating'))).order_by('-published_date')
+
+    selected_publisher_object = Publisher.objects.annotate(pub_avg_rating=Round(Avg('book__book_rating__rating'))).get(id=publisher_id)
+
+    selected_author_object = Author.objects.annotate(author_avg_rating=Round(Avg('book__book_rating__rating')))
+
+    try:
+        context = {'selected_publisher': selected_publisher,
+                   'selected_publisher_object': selected_publisher_object,
+                   'selected_author': selected_author_object,
+                   }
+        return render(request, 'publisher_page.html', context)
+    except selected_publisher_object.DoesNotExist:
+        error = 'No author exist of this referance'
+        return render(request, 'error.html', {'error': error})
 
 
-def search_form(request):
-    """	Show data from result of Query"""
-    return render('result.html')
+def author_page(request, author_id):
+    selected_author = Author.objects.get(pk=author_id).book_set.annotate(user_rating=Round(Avg('book_rating__rating'))).order_by('-published_date')
+
+    selected_author_object = Author.objects.annotate(author_avg_rating=Round(Avg('book__book_rating__rating'))).get(id=author_id)
+
+    selected_publisher_object = Publisher.objects.annotate(pub_avg_rating=Round(Avg('book__book_rating__rating')))
+    try:
+        context = {'selected_author': selected_author,
+                   'selected_publisher_object': selected_publisher_object,
+                   'selected_author_object': selected_author_object,
+                   }
+        return render(request, 'author_page.html', context)
+    except selected_author_object.DoesNotExist:
+        error = 'No author exist of this referance'
+        return render(request, 'error.html', {'error': error})
 
 
 def search(request):

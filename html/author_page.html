@@ -1,0 +1,23 @@
+{% include 'index.html' %}
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>Author details</title>
+</head>
+{% block content %}
+<div id="wrapper" style="width: auto; height: 90%;">
+<h1>You have selected Author : {{ selected_author_object.name }} Rated {{ selected_author_object.author_rating }} out of 5</h1>
+{% for p in selected_author %}
+    <div style="width: auto; height: 20%;">
+    <img src="{% static '/media/images/'%}{{ p.image }}" alt="No image"
+         style="float: left; width: 60px; height: 100px;">
+        <h1></h1>
+        <p style="font-size: large; padding-left: 25%;">Book Title : {{ p.name }}
+        <br>Price : ₹ {{ p.price }}
+        <br>Published on : {{ p.published_date }}
+        <br>Publisher : {{ p.pub }}
+        <br>User Rating: {{ p.user_rating }} out of 5
+    {% if not forloop.last %}<br style="border: dotted"> {% endif %}
+    </div>
+{% endfor %}
+{% endblock %}

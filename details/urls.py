@@ -9,5 +9,6 @@ urlpatterns = [
     # url(r'^search-form/$', views.search_form, name='search'),
     url(r'^search/$', views.search, name='search'),
     url(r'^product/(?P<book_id>[0-9]+)/$', views.product_page, name='product_page'),
-    # url(r'^product/rated/$', views.user_rating, name='book_rated'),
+    url(r'^publisher/(?P<publisher_id>[0-9]+)/$', views.publisher_page, name='publisher_page'),
+    url(r'^author/(?P<author_id>[0-9]+)/$', views.author_page, name='author_page')
 ]

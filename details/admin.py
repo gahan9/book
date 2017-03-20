@@ -6,7 +6,7 @@ admin.site.register(Publisher)
 
 
 class BookAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'price', 'pub', 'rating', 'published_date')
+    list_display = ('id', 'name', 'price', 'pub', 'rating', 'published_date', )
 
 admin.site.register(Book, BookAdmin)
 

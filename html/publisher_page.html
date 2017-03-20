@@ -1,0 +1,29 @@
+{% include 'index.html' %}
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>Publisher details</title>
+</head>
+{% block content %}
+<div id="wrapper" style="width: auto; height: 90%;">
+    <h1>You have selected Publisher : <b style="color: #921e12;">{{ selected_publisher_object.name }}</b> Rated {{ selected_publisher_object.pub_avg_rating }} out of 5</h1>
+{% for p in selected_publisher %}
+    <div style="width: auto; height: 22%; border-bottom: dotted;">
+    <img src="{% static '/media/images/'%}{{ p.image }}" alt="No image"
+         style="float: left; width: 100px; height: 100px; padding-left: 3%;">
+        <h1></h1>
+        <p style="font-size: large; padding-left: 15%;">Book Title : {{ p.name }}
+            <br style="text-indent: 5em;">Written By:
+            {% for a in p.author.all %}
+                {% if a in selected_author %}
+                    {{ a.name }} (Rated {{ a.author_rating }} out of 5)
+                {% endif %}
+                {% if not forloop.last %} , {% endif %}
+            {% endfor %}
+        <br>Price : ₹ {{ p.price }}
+        <br>Published on : {{ p.published_date }}
+        <br>User Rating: {{ p.user_rating }} out of 5
+        </p>
+    </div>
+{% endfor %}
+{% endblock %}

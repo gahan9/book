@@ -5,12 +5,16 @@ from django.db import models
 from django.contrib.auth.models import User, AbstractUser
 from django.db import models
 from django.db.models.signals import post_save
-from django.db.models import Avg
+from django.db.models import Avg, Func
+
+class Round(Func):
+    function = 'ROUND'
+    template = '%(function)s(%(expressions)s, 1)'
 
 
 class Publisher(models.Model):
     name = models.CharField(max_length=100)
-    pub_avg_rating = models.Aggregate(output_field=Decimal())
+    # pub_avg_rating = models.Aggregate(output_field=Decimal())
 
     def __str__(self):
         return self.name
@@ -18,9 +22,24 @@ class Publisher(models.Model):
 
 class Author(models.Model):
     name = models.CharField(max_length=100)
-    author_avg_rating = models.Aggregate(output_field=Decimal())
+    # author_avg_rating = models.Aggregate(output_field=Decimal())
     maximum_book = models.IntegerField(default=0)
     minimum_book = models.IntegerField(default=0)
+
+    def Round(Func):
+        function = 'ROUND'
+        template = '%(function)s(%(expressions)s, 1)'
+
+    @property
+    def author_rating(self):
+        book_instance = Book.objects.filter(author=self)
+        xy = []
+        for b in book_instance:
+            book_filtered = BookRating.objects.filter(book=b).values('rating')['rating']
+            xy.append(book_filtered)
+        print('values:', xy)
+        print(sum(xy)/len(xy))
+        return sum(xy)/len(xy)
 
     def __str__(self):
         return self.name
@@ -46,8 +65,8 @@ class BookRating(models.Model):
     book = models.ForeignKey(Book, related_name='book_rating')
     created = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return 'Profile of user: {}'.format(self.user.username)
-
     # def __str__(self):
-    #     return self.rating
+    #     return 'Profile of user: {}'.format(self.user.username)
+
+    def __str__(self):
+        return self.rating

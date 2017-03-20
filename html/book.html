@@ -46,8 +46,10 @@ height: 29px;width: 80px;margin: 0%; padding: 0;font-size: 15px;background-color
           <a style="color: #0c0f79; text-decoration: underline;" href="product/{{ entry.id }}">{{ entry.id }}</a>
         </td>
         <td style="overflow-wrap: break-word; max-width: 250px;">{{ entry.name }}</td>
-        <td>{% for auth in entry.author.all %}{{ auth }} <br>{% endfor %}</td>
-        <td>{{ entry.pub }}</td>
+          <td>{% for auth in entry.author.all %}<a style="color: #0c0f79; text-decoration: underline;" href="author/{{ auth.id }}">{{ auth }}</a>{% if not forloop.last %},{% endif %}{% endfor %}</td>
+        <td>
+            <a style="color: #0c0f79; text-decoration: underline;" href="publisher/{{ entry.pub_id }}">{{ entry.pub }}</a>
+        </td>
         <td>{{ entry.price }}</td>
       {% if entry.u_rating %}
         <td>{{ entry.u_rating }}</td>
