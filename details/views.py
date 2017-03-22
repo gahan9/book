@@ -1,5 +1,5 @@
 from django.shortcuts import render, render_to_response
-from django.http import HttpResponseRedirect, HttpResponse, Http404, request
+from django.http import HttpResponseRedirect, HttpResponse, Http404, request, JsonResponse
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
@@ -25,6 +25,11 @@ def index(request):
     all_books = Book.objects.all().annotate(u_rating=Round(Avg('book_rating__rating'))).order_by('-u_rating')
     context = {'bl': all_books}
     return render(request, 'book.html', context)
+
+
+def hello(request):
+    data = {'message': "Deleted successfully"}
+    return JsonResponse(data)
 
 
 def register(request):

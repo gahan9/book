@@ -1,5 +1,10 @@
 {% extends 'index.html' %}
+{% load static %}
 {% block content %}
+
+{#    <link rel="stylesheet" type="text/css" href="{% static 'css/switch.css' %}">#}
+{#    <link rel="stylesheet" type="text/css" href="{% static 'css/normalize.css' %}">#}
+{#    <link rel="stylesheet" type="text/css" href="{% static 'css/switch_demo.css' %}">#}
 
 <style type="text/css">
   form input[type="text"] {
@@ -8,6 +13,62 @@ height: 25px;width: 40px;margin: 0;padding: 0;font-size: 15px;border: 1px solid 
 
 form input[type="submit"] {
 height: 29px;width: 80px;margin: 0%; padding: 0;font-size: 15px;background-color: #666666 ;border: 1px solid #CCCCCC;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input {display:none;}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
 }
 </style>
 
@@ -27,10 +88,11 @@ height: 29px;width: 80px;margin: 0%; padding: 0;font-size: 15px;background-color
         <th><span>Delete</span></th>
         <th><span>In stock?</span></th>
       </tr>
-    </thead>    
+    </thead>
     <tbody>
-      <tr>
-      <td>  
+    <tr>
+
+      <td>
           <input type="text" name="id">          
       </td>
       <td>
@@ -42,7 +104,11 @@ height: 29px;width: 80px;margin: 0%; padding: 0;font-size: 15px;background-color
       <td>
           <input type="text" name="publication">
       </td>
-
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td><input type="submit" value="Go"></td></form>
       </tr>
       {% for entry in bl %}
       <tr>
@@ -57,19 +123,44 @@ height: 29px;width: 80px;margin: 0%; padding: 0;font-size: 15px;background-color
         <td>{{ entry.price }}</td>
           {% if entry.u_rating %}
             <td>{{ entry.u_rating }}</td>
+              {% else %}<td>Not Rated</td>
           {% endif %}
-        <td><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete" >Delete</button></td>
+        <td><button type="button" name="del" class="del_button">Delete</button></td>
+        <td><label class="switch"><input type="checkbox"><div class="slider round"></div><i></i></label>
+        </td>
       </tr>
+
       {% endfor %}
     </tbody>
   </table>
-<input type="submit" value="Go">
-</form>
  </div>
+{% endblock %}
+
+{% block extra_js %}
     <script>
-{#    setTimeout(function(){window.location.reload(true);}, 5000);#}
-{#    $.ajax({url: '/',#}
-{#        success: function(data)#}
-{#    {$('#wrapper').html(data);  }});#}
+        // indentation is most important.
+        $(document).ready(function(){
+            $(".del_button").on('click', function(){
+                console.log('delete clicked......');
+                console.log($(this));
+                debugger;
+                $.ajax({
+                    url: '/hello',
+                    type: 'get',
+                    success: function(data) {
+                        toastr.success(data['message']);
+                        $(this).hide();
+                        },
+                    failure: function(data) {
+                        toastr.error("Some error here");
+                    }
+                });
+            });
+        });
+            //$('.toggle').toggles();
+            //setTimeout(function(){window.location.reload(true);}, 5000);
+            //$.ajax({url: '/',
+             //   success: function(data)
+            //{$('#wrapper').html(data);  }});
     </script>
 {% endblock %}
