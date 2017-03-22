@@ -10,7 +10,6 @@ from django.db.models import Avg, Func
 from decimal import Decimal
 from operator import itemgetter
 
-
 from .forms import SignUpForm, ChangePassword
 from .models import *
 

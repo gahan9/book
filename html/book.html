@@ -1,5 +1,6 @@
 {% extends 'index.html' %}
-{% block 'content' %}
+{% block content %}
+
 <style type="text/css">
   form input[type="text"] {
 height: 25px;width: 40px;margin: 0;padding: 0;font-size: 15px;border: 1px solid #CCCCCC;
@@ -9,8 +10,9 @@ form input[type="submit"] {
 height: 29px;width: 80px;margin: 0%; padding: 0;font-size: 15px;background-color: #666666 ;border: 1px solid #CCCCCC;
 }
 </style>
+
     <p style="color: #2c3e50; font-size: large;font-family: Roboto; "><span>You are Logged in as {{ user.username }}</span></p>
-<div id="wrapper" style="width: 90%; overflow: auto; height: 90%;">
+<div id="wrapper" style="width: 95%; overflow: auto; height: 90%;">
   <h1>Book Inventory</h1>
 <form action="{% url 'search' %}" method="get">
   <table style="overflow-y: auto;" id="keywords" cellspacing="0" cellpadding="0">
@@ -22,6 +24,8 @@ height: 29px;width: 80px;margin: 0%; padding: 0;font-size: 15px;background-color
         <th><span>Publisher</span></th>
         <th><span>Price</span></th>
         <th><span>User Rating</span></th>
+        <th><span>Delete</span></th>
+        <th><span>In stock?</span></th>
       </tr>
     </thead>    
     <tbody>
@@ -51,9 +55,10 @@ height: 29px;width: 80px;margin: 0%; padding: 0;font-size: 15px;background-color
             <a style="color: #0c0f79; text-decoration: underline;" href="publisher/{{ entry.pub_id }}">{{ entry.pub }}</a>
         </td>
         <td>{{ entry.price }}</td>
-      {% if entry.u_rating %}
-        <td>{{ entry.u_rating }}</td>
-      {% endif %}
+          {% if entry.u_rating %}
+            <td>{{ entry.u_rating }}</td>
+          {% endif %}
+        <td><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete" >Delete</button></td>
       </tr>
       {% endfor %}
     </tbody>

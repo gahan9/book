@@ -7,6 +7,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.db.models import Avg, Func
 
+
 class Round(Func):
     function = 'ROUND'
     template = '%(function)s(%(expressions)s, 1)'
@@ -35,11 +36,11 @@ class Author(models.Model):
         book_instance = Book.objects.filter(author=self)
         xy = []
         for b in book_instance:
-            book_filtered = BookRating.objects.filter(book=b).values('rating')['rating']
-            xy.append(book_filtered)
+            book_filtered = BookRating.objects.filter(book=b).aggregate(avg=Round(Avg('rating')))
+            if book_filtered['avg'] is not None:
+                xy.append(book_filtered['avg'])
         print('values:', xy)
-        print(sum(xy)/len(xy))
-        return sum(xy)/len(xy)
+        return "%.1f" % (sum(xy)/len(xy))
 
     def __str__(self):
         return self.name
