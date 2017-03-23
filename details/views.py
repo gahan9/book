@@ -23,7 +23,7 @@ class Round(Func):
 @login_required(login_url='login/')
 def index(request):
     """	Show all data from database """
-    all_books = Book.objects.all().annotate(u_rating=Round(Avg('book_rating__rating'))).order_by('-u_rating')
+    all_books = Book.objects.all().annotate(u_rating=Round(Avg('book_rating__rating'))).order_by('u_rating')
     context = {'bl': all_books}
     return render(request, 'book.html', context)
 
@@ -33,12 +33,34 @@ def hello(request):
         entry_id = json.loads(request.GET.get('entry_id'))
         book_to_delete = Book.objects.get(pk=entry_id)
         message = "Book " + book_to_delete.name + " with id: " + entry_id + " deleted successfully"
-        book_to_delete.delete()
+        # book_to_delete.delete()
         data = {'message': message}
         return JsonResponse(data)
     else:
         data = {'message': 'Invalid Request'}
         return JsonResponse(data)
+
+
+def stock_availability(request):
+    if request.is_ajax():
+        switch_id = request.GET.get('switch_id')
+        switch_status = request.GET.get('switch_status')
+        # print(switch_status, switch_id, Book.objects.get(pk=switch_id).availability)
+        book = Book.objects.get(pk=switch_id)
+        print(book.availability)
+        if switch_status == 'off':
+            book.availability = 1
+            print(book.availability)
+        else:
+            book.availability = 0
+            print(book.availability)
+        book.save()
+        message = "Book: " + book.name + " id: " + switch_id + " New status is : " + book.availability
+        switch_list = {'message': message}
+        return JsonResponse(switch_list)
+    else:
+        switch_list = {'message': 'Invalid Request'}
+        return JsonResponse(switch_list)
 
 
 def register(request):

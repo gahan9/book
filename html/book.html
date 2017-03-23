@@ -1,146 +1,156 @@
 {% extends 'index.html' %}
 {% load static %}
 {% block content %}
+    <style type="text/css">
+        form input[type="text"] {
+            height: 25px;
+            width: 40px;
+            margin: 0;
+            padding: 0;
+            font-size: 15px;
+            border: 1px solid #CCCCCC;
+        }
 
-{#    <link rel="stylesheet" type="text/css" href="{% static 'css/switch.css' %}">#}
-{#    <link rel="stylesheet" type="text/css" href="{% static 'css/normalize.css' %}">#}
-{#    <link rel="stylesheet" type="text/css" href="{% static 'css/switch_demo.css' %}">#}
+        form input[type="submit"] {
+            height: 29px;
+            width: 80px;
+            margin: 0%;
+            padding: 0;
+            font-size: 15px;
+            background-color: #666666;
+            border: 1px solid #CCCCCC;
+        }
 
-<style type="text/css">
-  form input[type="text"] {
-height: 25px;width: 40px;margin: 0;padding: 0;font-size: 15px;border: 1px solid #CCCCCC;
-}
 
-form input[type="submit"] {
-height: 29px;width: 80px;margin: 0%; padding: 0;font-size: 15px;background-color: #666666 ;border: 1px solid #CCCCCC;
-}
-
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 60px;
-  height: 34px;
-}
-
-.switch input {display:none;}
-
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
-}
-
-input:checked + .slider {
-  background-color: #2196F3;
-}
-
-input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
-}
-
-input:checked + .slider:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
-}
-
-/* Rounded sliders */
-.slider.round {
-  border-radius: 34px;
-}
-
-.slider.round:before {
-  border-radius: 50%;
-}
-</style>
-
-    <p style="color: #2c3e50; font-size: large;font-family: Roboto; "><span>You are Logged in as {{ user.username }}</span></p>
-<div id="wrapper" style="width: 95%; overflow: auto; height: 90%;">
-  <h1>Book Inventory</h1>
-<form action="{% url 'search' %}" method="get">
-  <table style="overflow-y: auto;" id="keywords" cellspacing="0" cellpadding="0">
-    <thead>
-      <tr>
-        <th><span>ID</span></th>
-        <th><span>Book Name</span></th>
-        <th><span>Author</span></th>
-        <th><span>Publisher</span></th>
-        <th><span>Price</span></th>
-        <th><span>User Rating</span></th>
-        <th><span>Delete</span></th>
-        <th><span>In stock?</span></th>
-      </tr>
-    </thead>
-    <tbody class="book_data">
-    <tr>
-
-      <td>
-          <input type="text" name="id">          
-      </td>
-      <td>
-          <input type="text" name="name">
-      </td>
-      <td>
-          <input type="text" name="author">
-      </td>
-      <td>
-          <input type="text" name="publication">
-      </td>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-          <td><input type="submit" value="Go"></td></form>
-      </tr>
-      {% for entry in bl %}
-      <tr class={{ entry.id }}>
-        <td>
-          <a style="color: #0c0f79; text-decoration: underline;" href="product/{{ entry.id }}">{{ entry.id }}</a>
-        </td>
-        <td style="overflow-wrap: break-word; max-width: 250px;">{{ entry.name }}</td>
-          <td>{% for auth in entry.author.all %}<a style="color: #0c0f79; text-decoration: underline;" href="author/{{ auth.id }}">{{ auth }}</a>{% if not forloop.last %},{% endif %}{% endfor %}</td>
-        <td>
-            <a style="color: #0c0f79; text-decoration: underline;" href="publisher/{{ entry.pub_id }}">{{ entry.pub }}</a>
-        </td>
-        <td>{{ entry.price }}</td>
-          {% if entry.u_rating %}
-            <td>{{ entry.u_rating }}</td>
-              {% else %}<td>Not Rated</td>
-          {% endif %}
-        <td><button type="button" name="del" class="del_button">Delete</button></td>
-        <td><label class="switch"><input type="checkbox"><div class="slider round"></div><i></i></label>
-        </td>
-      </tr>
-
-      {% endfor %}
-    </tbody>
-  </table>
- </div>
+        .switch {
+          position: relative;
+          display: inline-block;
+          width: 60px;
+          height: 34px;
+        }
+        .switch input {display:none;}
+        .slider {
+          position: absolute;
+          cursor: pointer;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: #ccc;
+          -webkit-transition: .4s;
+          transition: .4s;
+        }
+        .slider:before {
+          position: absolute;
+          content: "";
+          height: 26px;
+          width: 26px;
+          left: 4px;
+          bottom: 4px;
+          background-color: white;
+          -webkit-transition: .4s;
+          transition: .4s;
+        }
+        input:checked + .slider {
+          background-color: #2196F3;
+        }
+        input:focus + .slider {
+          box-shadow: 0 0 1px #2196F3;
+        }
+        input:checked + .slider:before {
+          -webkit-transform: translateX(26px);
+          -ms-transform: translateX(26px);
+          transform: translateX(26px);
+        }
+        /* Rounded sliders */
+        .slider.round {
+          border-radius: 23px;
+        }
+        .slider.round:before {
+          border-radius: 50%;
+        }
+    </style>
+    <p style="color: #2c3e50; font-size: large;font-family: Roboto; "><span>You are Logged in as {{ user.username }}</span>
+    </p>
+    <div id="wrapper" style="width: 95%; overflow: auto; height: 90%;">
+        <h1>Book Inventory</h1>
+        <form action="{% url 'search' %}" method="get">
+            <table style="overflow-y: auto;" id="keywords" cellspacing="1" cellpadding="1">
+                <thead>
+                <tr>
+                    <th><span>ID</span></th>
+                    <th><span>Book Name</span></th>
+                    <th><span>Author</span></th>
+                    <th><span>Publisher</span></th>
+                    <th><span>Price</span></th>
+                    <th><span>User Rating</span></th>
+                    <th><span>Delete</span></th>
+                    <th><span>In stock?</span></th>
+                </tr>
+                </thead>
+                <tbody class="book_data">
+                <tr>
+                    <td>
+                        <input type="text" name="id">
+                    </td>
+                    <td>
+                        <input type="text" name="name">
+                    </td>
+                    <td>
+                        <input type="text" name="author">
+                    </td>
+                    <td>
+                        <input type="text" name="publication">
+                    </td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td><input type="submit" value="Go"></td>
+                </tr>
+                {% for entry in bl %}
+                    <tr class={{ entry.id }}>
+                        <td>
+                            <a style="color: #0c0f79; text-decoration: underline;" href="product/{{ entry.id }}">{{ entry.id }}</a>
+                        </td>
+                        <td style="overflow-wrap: break-word; max-width: 250px;">{{ entry.name }}</td>
+                        <td>{% for auth in entry.author.all %}
+                            <a style="color: #0c0f79; text-decoration: underline;" href="author/{{ auth.id }}">{{ auth }}</a>
+                            {% if not forloop.last %},{% endif %}{% endfor %}</td>
+                        <td>
+                            <a style="color: #0c0f79; text-decoration: underline;" href="publisher/{{ entry.pub_id }}">{{ entry.pub }}</a>
+                        </td>
+                        <td>{{ entry.price }}</td>
+                        {% if entry.u_rating %}
+                            <td>{{ entry.u_rating }}</td>
+                        {% else %}
+                            <td>Not Rated</td>
+                        {% endif %}
+                        <td>
+                            <button type="button" name="del" class="del_button"> Delete </button>
+                        </td>
+                        <td>
+                            <label class="switch">
+                                <input type="checkbox" class="on-off-switch">
+                                <div class="slider round"></div><i></i>
+                            </label>
+                        </td>
+{#                        <td>#}
+{#                            <input type="checkbox" class="on-off-switch" checked>#}
+{#                        </td>#}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </form>
+    </div>
 {% endblock %}
 
 {% block extra_js %}
     <script>
         // indentation is most important.
-        $(document).ready(function(){
-            $(".del_button").on('click', function(){
+        $(document).ready(function () {
+            $(".del_button").on('click', function () {
                 var et = $(this).parents(':eq(1)').prop('className');
                 var entry = JSON.stringify(et);
                 $(this).parents(':eq(1)').remove();
@@ -149,23 +159,41 @@ input:checked + .slider:before {
                 $.ajax({
                     url: '/hello/',
                     type: 'GET',
-                    data : {entry_id : entry},
-                    success: function(data) {
+                    data: {entry_id: entry},
+                    success: function (data) {
                         toastr.success(data['message']);
-
                         // $(".book_data").empty().load(window.location.href + ".book_data");
-
-                        },
-                    failure: function(data) {
+                    },
+                    failure: function (data) {
                         toastr.error("Some error here");
                     }
                 });
             });
-        });
-            //$('.toggle').toggles();
-            //setTimeout(function(){window.location.reload(true);}, 5000);
-            //$.ajax({url: '/',
-             //   success: function(data)
-            //{$('#wrapper').html(data);  }});
+
+            $(".on-off-switch").on('click', function () {
+                var switch_id = $(this).parents(':eq(2)').prop('className');
+                $(this).attr("checked","checked");
+                var switch_status = $(this).val();
+                console.log(switch_id, switch_status);
+                // debugger;
+                $.ajax({
+                    url: '/stock_availability/',
+                    type: 'GET',
+                    data: {switch_id: switch_id, switch_status: switch_status},
+                    success: function (switch_list) {
+                        toastr.success(switch_list['message']);
+                        // $(".book_data").empty().load(window.location.href + ".book_data");
+                    },
+                    failure: function (switch_list) {
+                        toastr.error("Some error here");
+                    }
+                });
+            })
+    });
+        //$('.toggle').toggles();
+        //setTimeout(function(){window.location.reload(true);}, 5000);
+        //$.ajax({url: '/',
+        //   success: function(data)
+        //{$('#wrapper').html(data);  }});
     </script>
 {% endblock %}

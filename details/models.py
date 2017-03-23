@@ -55,6 +55,7 @@ class Book(models.Model):
     pub = models.ForeignKey(Publisher)
     price = models.FloatField(validators=[MinValueValidator(0.9)], verbose_name='Book Price')
     published_date = models.DateField(blank=True, null=True, verbose_name='Date of Book published')
+    availability = models.BooleanField(default=False, verbose_name='available for sale or not.')
 
     def __str__(self):
         return self.name
