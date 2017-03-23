@@ -89,7 +89,7 @@ input:checked + .slider:before {
         <th><span>In stock?</span></th>
       </tr>
     </thead>
-    <tbody>
+    <tbody class="book_data">
     <tr>
 
       <td>
@@ -111,7 +111,7 @@ input:checked + .slider:before {
           <td><input type="submit" value="Go"></td></form>
       </tr>
       {% for entry in bl %}
-      <tr>
+      <tr class={{ entry.id }}>
         <td>
           <a style="color: #0c0f79; text-decoration: underline;" href="product/{{ entry.id }}">{{ entry.id }}</a>
         </td>
@@ -141,15 +141,20 @@ input:checked + .slider:before {
         // indentation is most important.
         $(document).ready(function(){
             $(".del_button").on('click', function(){
-                console.log('delete clicked......');
+                var et = $(this).parents(':eq(1)').prop('className');
+                var entry = JSON.stringify(et);
+                $(this).parents(':eq(1)').remove();
+                console.log('delete clicked......' + et);
                 console.log($(this));
-                debugger;
                 $.ajax({
-                    url: '/hello',
-                    type: 'get',
+                    url: '/hello/',
+                    type: 'GET',
+                    data : {entry_id : entry},
                     success: function(data) {
                         toastr.success(data['message']);
-                        $(this).hide();
+
+                        // $(".book_data").empty().load(window.location.href + ".book_data");
+
                         },
                     failure: function(data) {
                         toastr.error("Some error here");

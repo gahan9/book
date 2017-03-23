@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render, render_to_response
 from django.http import HttpResponseRedirect, HttpResponse, Http404, request, JsonResponse
 from django.contrib.auth.models import User
@@ -28,8 +29,16 @@ def index(request):
 
 
 def hello(request):
-    data = {'message': "Deleted successfully"}
-    return JsonResponse(data)
+    if request.is_ajax():
+        entry_id = json.loads(request.GET.get('entry_id'))
+        book_to_delete = Book.objects.get(pk=entry_id)
+        message = "Book " + book_to_delete.name + " with id: " + entry_id + " deleted successfully"
+        book_to_delete.delete()
+        data = {'message': message}
+        return JsonResponse(data)
+    else:
+        data = {'message': 'Invalid Request'}
+        return JsonResponse(data)
 
 
 def register(request):
