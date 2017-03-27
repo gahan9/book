@@ -59,12 +59,13 @@
                             <td>Not Rated</td>
                         {% endif %}
                         <td>
-                            <button type="button" name="del" class="btn btn-default del_button"> Delete </button>
+                            <button type="button" name="del" class="btn btn-default del_button">
+                                <span class="glyphicon glyphicon-remove "></span>
+                            </button>
                         </td>
                         <td>
                             <label class="switch">
                                 <input type="checkbox" class="toggle_button" {% if entry.availability %} checked {% endif %} data-toggle="toggle">
-                                <div class="slider round"></div><i></i>
                             </label>
                         </td>
 
