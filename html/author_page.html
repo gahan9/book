@@ -11,11 +11,11 @@
     <div class="container">
     <img src="{% static '/media/images/'%}{{ p.image }}" alt="No image" class="gap img-rounded pull-left sizeSmall">
         <h1></h1>
-        <p>Book Title : {{ p.name }}
-        <br>Price : ₹ {{ p.price }}
-        <br>Published on : {{ p.published_date }}
-        <br>Publisher : {{ p.pub }}
-        <br>User Rating: {{ p.user_rating }} out of 5
+        <p> Book Title : <a href="{% url 'product_page' book_id=p.id %}">{{ p.name }}</a>
+        <br> Price : ₹ {{ p.price }}
+        <br> Published on : {{ p.published_date }}
+        <br> Publisher : <a href="{% url 'publisher_page' publisher_id=p.pub_id %}">{{ p.pub }}</a>
+        <br> User Rating: {{ p.user_rating }} out of 5
     {% if not forloop.last %}<br> {% endif %}
     </div>
 {% endfor %}

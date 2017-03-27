@@ -10,11 +10,11 @@
     {% for p in selected_publisher %}
         <div class="container">
             <img src="{% static '/media/images/'%}{{ p.image }}" alt="No image" class="gap img-rounded pull-left sizeSmall">
-            <p> Book Title : {{ p.name }}
+            <p> Book Title : <a href="{% url 'product_page' book_id=p.id %}">{{ p.name }}</a>
             <br> Written By:
                 {% for a in p.author.all %}
                     {% if a in selected_author %}
-                        {{ a.name }} (Rated {{ a.author_rating }} out of 5)
+                        <a href="{% url 'author_page' author_id=a.id %}">{{ a.name }}</a> (Rated {{ a.author_rating }} out of 5)
                     {% endif %}
                     {% if not forloop.last %} , {% endif %}
                 {% endfor %}

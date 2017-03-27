@@ -43,14 +43,14 @@
                 {% for entry in bl %}
                     <tr class={{ entry.id }}>
                         <td>
-                            <a style="color: #0c0f79; text-decoration: underline;" href="product/{{ entry.id }}">{{ entry.id }}</a>
+                            <a href="{% url 'product_page' book_id=entry.id %}">{{ entry.id }}</a>
                         </td>
-                        <td style="overflow-wrap: break-word; max-width: 250px;">{{ entry.name }}</td>
+                        <td >{{ entry.name }}</td>
                         <td>{% for auth in entry.author.all %}
-                            <a style="color: #0c0f79; text-decoration: underline;" href="author/{{ auth.id }}">{{ auth }}</a>
+                            <a href="{% url 'author_page' author_id=auth.id %}">{{ auth }}</a>
                             {% if not forloop.last %},{% endif %}{% endfor %}</td>
                         <td>
-                            <a style="color: #0c0f79; text-decoration: underline;" href="publisher/{{ entry.pub_id }}">{{ entry.pub }}</a>
+                            <a href="{% url 'publisher_page' publisher_id=entry.pub_id %}">{{ entry.pub }}</a>
                         </td>
                         <td>{{ entry.price }}</td>
                         {% if entry.u_rating %}
@@ -60,7 +60,7 @@
                         {% endif %}
                         <td>
                             <button type="button" name="del" class="btn btn-default del_button">
-                                <span class="glyphicon glyphicon-remove "></span>
+                                <span class="glyphicon glyphicon-remove"></span>
                             </button>
                         </td>
                         <td>
@@ -68,7 +68,6 @@
                                 <input type="checkbox" class="toggle_button" {% if entry.availability %} checked {% endif %} data-toggle="toggle">
                             </label>
                         </td>
-
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -80,16 +79,16 @@
 
 {% block extra_js %}
     <script>
-        // indentation is most important.
         $(document).ready(function () {
             $(".del_button").on('click', function () {
+            if(confirm("Are you sure about delete this?")) {
                 var et = $(this).parents(':eq(1)').prop('className');
                 var entry = JSON.stringify(et);
                 $(this).parents(':eq(1)').remove();
                 console.log('delete clicked......' + et);
                 console.log($(this));
                 $.ajax({
-                    url: '/hello/',
+                    url: '/delete_entry/',
                     type: 'GET',
                     data: {entry_id: entry},
                     success: function (data) {
@@ -100,6 +99,11 @@
                         toastr.error("Some error here");
                     }
                 });
+            }
+            else{
+                return false;
+            }
+
             });
 
             $(".toggle_button").change(function () {
@@ -113,16 +117,13 @@
                     data: {switch_id: switch_id, switch_status: switch_status},
                     success: function (data) {
                         toastr.success(data['message']);
-                        // $(".book_data").empty().load(window.location.href + ".book_data");
                     },
                     failure: function (data) {
                         toastr.error("Some error here");
                     }
                 });
             });
-{#            $('.toggle_button').each(function () {#}
-{#                $(this).trigger('change');#}
-{#            })#}
+
     });
     </script>
 {% endblock %}

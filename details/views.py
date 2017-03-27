@@ -28,7 +28,7 @@ def index(request):
     return render(request, 'book.html', context)
 
 
-def hello(request):
+def delete_entry(request):
     if request.is_ajax():
         entry_id = json.loads(request.GET.get('entry_id'))
         book_to_delete = Book.objects.get(pk=entry_id)
