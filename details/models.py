@@ -39,8 +39,10 @@ class Author(models.Model):
             book_filtered = BookRating.objects.filter(book=b).aggregate(avg=Round(Avg('rating')))
             if book_filtered['avg'] is not None:
                 xy.append(book_filtered['avg'])
-        print('values:', xy)
-        return "%.1f" % (sum(xy)/len(xy))
+        if len(xy) > 0:
+            return "%.1f" % (sum(xy)/len(xy))
+        else:
+            return "Not Rated"
 
     def __str__(self):
         return self.name
