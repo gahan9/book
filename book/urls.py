@@ -9,7 +9,6 @@ from details.forms import LoginForm, SignUpForm
 from details.views import index, register, change_password, activate_new_user
 
 urlpatterns = [
-    url(r'^$', index, name='index'),
     url(r'^admin/', admin.site.urls),
     url(r'^register/$', register, name='signup'),
     url(r'^activate/(?P<pk>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
