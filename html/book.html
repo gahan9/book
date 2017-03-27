@@ -1,85 +1,36 @@
 {% extends 'index.html' %}
 {% load static %}
 {% block content %}
-    <style type="text/css">
-        form input[type="text"] {
-            height: 25px;
-            width: 40px;
-            margin: 0;
-            padding: 0;
-            font-size: 15px;
-            border: 1px solid #CCCCCC;
-        }
-
-        form input[type="submit"] {
-            height: 29px;
-            width: 80px;
-            margin: 0%;
-            padding: 0;
-            font-size: 15px;
-            background-color: #666666;
-            border: 1px solid #CCCCCC;
-        }
-
-
-        .switch {
-          position: relative;
-          display: inline-block;
-          width: 60px;
-          height: 34px;
-        }
-        .switch input {display:none;}
-        .slider {
-          position: absolute;
-          cursor: pointer;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background-color: #ccc;
-          -webkit-transition: .4s;
-          transition: .4s;
-        }
-        .slider:before {
-          position: absolute;
-          content: "";
-          height: 26px;
-          width: 26px;
-          left: 4px;
-          bottom: 4px;
-          background-color: white;
-          -webkit-transition: .4s;
-          transition: .4s;
-        }
-        input:checked + .slider {
-          background-color: #2196F3;
-        }
-        input:focus + .slider {
-          box-shadow: 0 0 1px #2196F3;
-        }
-        input:checked + .slider:before {
-          -webkit-transform: translateX(26px);
-          -ms-transform: translateX(26px);
-          transform: translateX(26px);
-        }
-        /* Rounded sliders */
-        .slider.round {
-          border-radius: 23px;
-        }
-        .slider.round:before {
-          border-radius: 50%;
-        }
-    </style>
-    <p style="color: #2c3e50; font-size: large;font-family: Roboto; "><span>You are Logged in as {{ user.username }}</span>
+<div class="container">
+    <p><span>You are Logged in as {{ user.username }}</span>
     </p>
-    <div id="wrapper" style="width: 95%; overflow: auto; height: 90%;">
-        <h1>Book Inventory</h1>
+    <div id="wrapper">
+        <h1 class="text-center">Book Inventory</h1>
         <form action="{% url 'search' %}" method="get">
-            <table style="overflow-y: auto;" id="keywords" cellspacing="1" cellpadding="1">
+            <table class="table">
+                <tr>
+                    <td>
+                        <input type="text" class="form-control" name="id" placeholder="Search by Id">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" name="name" placeholder="Search by Title">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" name="author" placeholder="Search by Author">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" name="publication" placeholder="Search by Publisher">
+                    </td>
+                    <td><input type="submit" class="btn btn-default" value="Go"></td>
+                </tr>
+            </table>
+
+            <table class="table">
+
                 <thead>
                 <tr>
                     <th><span>ID</span></th>
-                    <th><span>Book Name</span></th>
+                    <th><span>Book Title</span></th>
                     <th><span>Author</span></th>
                     <th><span>Publisher</span></th>
                     <th><span>Price</span></th>
@@ -89,25 +40,6 @@
                 </tr>
                 </thead>
                 <tbody class="book_data">
-                <tr>
-                    <td>
-                        <input type="text" name="id">
-                    </td>
-                    <td>
-                        <input type="text" name="name">
-                    </td>
-                    <td>
-                        <input type="text" name="author">
-                    </td>
-                    <td>
-                        <input type="text" name="publication">
-                    </td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                    <td><input type="submit" value="Go"></td>
-                </tr>
                 {% for entry in bl %}
                     <tr class={{ entry.id }}>
                         <td>
@@ -127,23 +59,22 @@
                             <td>Not Rated</td>
                         {% endif %}
                         <td>
-                            <button type="button" name="del" class="del_button"> Delete </button>
+                            <button type="button" name="del" class="btn btn-default del_button"> Delete </button>
                         </td>
                         <td>
                             <label class="switch">
-                                <input type="checkbox" class="on-off-switch">
+                                <input type="checkbox" class="toggle_button" {% if entry.availability %} checked {% endif %} data-toggle="toggle">
                                 <div class="slider round"></div><i></i>
                             </label>
                         </td>
-{#                        <td>#}
-{#                            <input type="checkbox" class="on-off-switch" checked>#}
-{#                        </td>#}
+
                     </tr>
                 {% endfor %}
                 </tbody>
             </table>
         </form>
     </div>
+</div>
 {% endblock %}
 
 {% block extra_js %}
@@ -170,30 +101,27 @@
                 });
             });
 
-            $(".on-off-switch").on('click', function () {
-                var switch_id = $(this).parents(':eq(2)').prop('className');
-                $(this).attr("checked","checked");
-                var switch_status = $(this).val();
+            $(".toggle_button").change(function () {
+                var switch_id = $(this).parents(':eq(3)').prop('className');
+                var switch_status = $(this).is(':checked');
                 console.log(switch_id, switch_status);
                 // debugger;
                 $.ajax({
                     url: '/stock_availability/',
                     type: 'GET',
                     data: {switch_id: switch_id, switch_status: switch_status},
-                    success: function (switch_list) {
-                        toastr.success(switch_list['message']);
+                    success: function (data) {
+                        toastr.success(data['message']);
                         // $(".book_data").empty().load(window.location.href + ".book_data");
                     },
-                    failure: function (switch_list) {
+                    failure: function (data) {
                         toastr.error("Some error here");
                     }
                 });
-            })
+            });
+{#            $('.toggle_button').each(function () {#}
+{#                $(this).trigger('change');#}
+{#            })#}
     });
-        //$('.toggle').toggles();
-        //setTimeout(function(){window.location.reload(true);}, 5000);
-        //$.ajax({url: '/',
-        //   success: function(data)
-        //{$('#wrapper').html(data);  }});
     </script>
 {% endblock %}

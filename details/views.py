@@ -33,7 +33,7 @@ def hello(request):
         entry_id = json.loads(request.GET.get('entry_id'))
         book_to_delete = Book.objects.get(pk=entry_id)
         message = "Book " + book_to_delete.name + " with id: " + entry_id + " deleted successfully"
-        # book_to_delete.delete()
+        book_to_delete.delete()
         data = {'message': message}
         return JsonResponse(data)
     else:
@@ -45,22 +45,22 @@ def stock_availability(request):
     if request.is_ajax():
         switch_id = request.GET.get('switch_id')
         switch_status = request.GET.get('switch_status')
-        # print(switch_status, switch_id, Book.objects.get(pk=switch_id).availability)
+        print(switch_status, switch_id, type(switch_status), sep=" ************ ")
         book = Book.objects.get(pk=switch_id)
-        print(book.availability)
-        if switch_status == 'off':
-            book.availability = 1
-            print(book.availability)
+        print("Before loop : ---------------->", book.availability)
+        if switch_status == 'true':
+            book.availability = True
+            print("In if : ---------------->", book.availability)
         else:
-            book.availability = 0
-            print(book.availability)
+            book.availability = False
+            print("In else : ---------------->", book.availability)
         book.save()
-        message = "Book: " + book.name + " id: " + switch_id + " New status is : " + book.availability
-        switch_list = {'message': message}
-        return JsonResponse(switch_list)
+        message = "Book: " + book.name + " id: " + str(switch_id) + " New status is : " + str(book.availability)
+        data = {'message': message}
+        return JsonResponse(data)
     else:
-        switch_list = {'message': 'Invalid Request'}
-        return JsonResponse(switch_list)
+        data = {'message': 'Invalid Request'}
+        return JsonResponse(data)
 
 
 def register(request):
