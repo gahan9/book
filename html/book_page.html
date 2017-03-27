@@ -1,4 +1,6 @@
 {% include 'index.html' %}
+{% block crumb %}
+{% endblock %}
 {% load static %}
 <head>
     <meta charset="UTF-8">
@@ -6,7 +8,7 @@
 </head>
 {% block content %}
 <div class="container">
-    <img src="{% static '/media/images/' %}{{ p.image }}" alt="No image" class="pull-left img-rounded sizeMedium gap">
+    <img src="{% static '/media/images/' %}{{ p.image }}" alt="No image found" class="pull-left img-rounded sizeMedium gap">
         <h1 class="text-center">{{ p.name }}</h1>
         <p >Published By <a href="{% url 'publisher_page' publisher_id=p.pub_id %}">{{ p.pub }} </a> (Rated {{ publisher_rating }} out of 5)
             <br>

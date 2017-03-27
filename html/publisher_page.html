@@ -9,7 +9,7 @@
     <h1>You have selected Publisher : <b> {{ selected_publisher_object.name }}</b> Rated {{ selected_publisher_object.pub_avg_rating }} out of 5</h1>
     {% for p in selected_publisher %}
         <div class="container">
-            <img src="{% static '/media/images/'%}{{ p.image }}" alt="No image" class="gap img-rounded pull-left sizeSmall">
+            <img src="{% static '/media/images/'%}{{ p.image }}" alt="No image found" class="gap img-rounded pull-left sizeSmall">
             <p> Book Title : <a href="{% url 'product_page' book_id=p.id %}">{{ p.name }}</a>
             <br> Written By:
                 {% for a in p.author.all %}
