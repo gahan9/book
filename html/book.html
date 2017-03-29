@@ -1,7 +1,13 @@
 {% extends 'index.html' %}
+<title>Book Inventory</title>
 {% load static %}
-{% block navbar %}
+
+
+
+{% block nav_right %}
+    <button type="button" class="btn btn-success navbar-btn">Add Book</button>
 {% endblock %}
+
 {% block content %}
 <div class="container">
     <div class="container">
@@ -80,30 +86,34 @@
 {% block extra_js %}
     <script>
         $(document).ready(function () {
-            $(".del_button").on('click', function () {
-            if(confirm("Are you sure about delete this?")) {
-                var et = $(this).parents(':eq(1)').prop('className');
-                var entry = JSON.stringify(et);
-                $(this).parents(':eq(1)').remove();
-                console.log('delete clicked......' + et);
+            $(".btn.btn-success").on('click',function () {
                 console.log($(this));
-                $.ajax({
-                    url: '/delete_entry/',
-                    type: 'GET',
-                    data: {entry_id: entry},
-                    success: function (data) {
-                        toastr.success(data['message']);
-                        // $(".book_data").empty().load(window.location.href + ".book_data");
-                    },
-                    failure: function (data) {
-                        toastr.error("Some error here");
-                    }
-                });
-            }
-            else{
-                return false;
-            }
+                console.log("add book clicked");
+                window.location.href = '{% url 'add_book' %}/';
+            });
 
+            $(".del_button").on('click', function () {
+                if(confirm("Are you sure about delete this?")) {
+                    var et = $(this).parents(':eq(1)').prop('className');
+                    var entry = JSON.stringify(et);
+                    $(this).parents(':eq(1)').remove();
+                    console.log('delete clicked......' + et);
+                    console.log($(this));
+                    $.ajax({
+                        url: '/delete_entry/',
+                        type: 'GET',
+                        data: {entry_id: entry},
+                        success: function (data) {
+                            toastr.success(data['message']);
+                        },
+                        failure: function (data) {
+                            toastr.error("Some error here");
+                        }
+                    })
+                }
+                else{
+                    return false;
+                }
             });
 
             $(".toggle_button").change(function () {

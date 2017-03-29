@@ -1,0 +1,20 @@
+{% include 'index.html' %}
+{% load static %}
+<style>
+    .asteriskField {
+        display: none;
+    }
+</style>
+{% load crispy_forms_tags %}
+<title>Add book | Book Inventory</title>
+{#<link rel="stylesheet" type="text/css" href="{% static '/admin/css/base.css' %}" />#}
+{#<link rel="stylesheet" type="text/css" href="{% static '/admin/css/forms.css' %}" />#}
+
+{% block content %}
+    <div class="container center-block">
+        <h2>Add Book</h2>
+{#            <div class="col-md-6">#}
+                {% crispy form form.helper %}
+{#            </div>#}
+    </div>
+{% endblock %}
