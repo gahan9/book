@@ -146,7 +146,11 @@ EMAIL_HOST_PASSWORD = 'r@123456'
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
+# Crispy Forms to render bootstrap CSS
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
+# Message Framework Storage
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'

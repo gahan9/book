@@ -1,4 +1,5 @@
 import json
+from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import render, render_to_response
 from django.http import HttpResponseRedirect, HttpResponse, Http404, request, JsonResponse
 from django.contrib.auth.models import User
@@ -7,6 +8,7 @@ from django.core.mail import send_mail
 from django.contrib.auth.tokens import PasswordResetTokenGenerator as activation_user
 from django.template import loader
 from django.views.generic.edit import CreateView
+from django.contrib import messages
 
 from .forms import SignUpForm, ChangePassword, AddBookForm
 from .models import *
@@ -14,8 +16,10 @@ from .models import *
 
 class BookCreate(CreateView):
     template_name = 'book_create.html'
-    redirect_url = '/'
     form_class = AddBookForm
+    success_url = '/'
+    success_message = "Book added successfully."
+    messages.success(request, 'Book Created Successfully')
 
 
 class Round(Func):
