@@ -6,12 +6,12 @@ from crispy_forms.layout import *
 from crispy_forms.bootstrap import *
 
 add_book_helper = FormHelper()
-# add_book_helper.form_tag = True
+add_book_helper.form_tag = True
 # add_book_helper.form_id = 'id-registerform'
 add_book_helper.form_class = 'form-horizontal'
-# add_book_helper.form_method = 'POST'
-# add_book_helper.form_action = reverse_lazy('index')
-# add_book_helper.form_show_labels = True   # default = True
+add_book_helper.form_method = 'POST'
+# add_book_helper.form_action = '/'
+add_book_helper.form_show_labels = True   # default = True
 add_book_helper.label_class = 'col-lg-2'
 add_book_helper.field_class = 'col-lg-4'
 add_book_helper.layout = Layout(
