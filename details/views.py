@@ -18,9 +18,13 @@ class BookCreate(CreateView):
     template_name = 'book_create.html'
     form_class = AddBookForm
     success_url = '/'
-    success_message = "Book added successfully."
-    messages.success(request, 'Book Created Successfully')
+    success_message = "%(calculated_field)s added successfully"
 
+    def get_success_message(self, cleaned_data):
+        return self.success_message % dict(
+            cleaned_data,
+            calculated_field=self.object.calculated_field,
+        )
 
 class Round(Func):
     function = 'ROUND'
