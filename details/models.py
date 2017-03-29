@@ -47,11 +47,11 @@ class Author(models.Model):
 
 
 class Book(models.Model):
-    name = models.CharField(max_length=150, verbose_name='Book Name')
+    name = models.CharField(max_length=150, verbose_name='Book Title')
     image = models.ImageField(null=True, blank=True, verbose_name='Book Image')
-    author = models.ManyToManyField(Author)
+    author = models.ManyToManyField(Author, verbose_name='Author Name')
     rating = models.DecimalField(null=True, blank=True, verbose_name='Expert Rating', max_digits=2, decimal_places=1)
-    pub = models.ForeignKey(Publisher)
+    pub = models.ForeignKey(Publisher, verbose_name='Publisher')
     price = models.FloatField(validators=[MinValueValidator(0.9)], verbose_name='Book Price')
     published_date = models.DateField(blank=True, null=True, verbose_name='Date of Book published')
     availability = models.BooleanField(default=False, verbose_name='available for sale or not.')

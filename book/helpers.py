@@ -11,24 +11,15 @@ add_book_helper = FormHelper()
 add_book_helper.form_class = 'form-horizontal'
 # add_book_helper.form_method = 'POST'
 # add_book_helper.form_action = reverse_lazy('index')
-# add_book_helper.form_show_labels = True
-add_book_helper.label_class = 'col-md-6'
-add_book_helper.field_class = 'col-md-6'
+# add_book_helper.form_show_labels = True   # default = True
+add_book_helper.label_class = 'col-lg-2'
+add_book_helper.field_class = 'col-lg-4'
 add_book_helper.layout = Layout(
-    # Div(
-    #     Div(
-    #         Field('name', css_class='form-control'),
-    #         css_class="col-md-3"
-    #         ),
-    #     css_class="form-row"
-    #     ),
-    Field('name', css_class='form-control col-md-3'),
-    Field('image', css_class='form-control col-md-3'),
+    Field('name', css_class='form-control'),
+    Field('image', css_class='form-control'),
     Field('author', css_class='form-control'),
     Field('pub', css_class='form-control'),
     PrependedText('price', "₹", css_class='form-control', ),
     Field('published_date', css_class='form-control datepicker'),
-    # Field('availability', css_class='form-control'),
     Div(FormActions(Submit('Save changes', value="Save", css_class="btn-primary align-right"),), css_class="container")
-
 )

@@ -1,7 +1,18 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, PasswordResetForm
 from django.contrib.auth import get_user_model
 from django.contrib.auth import password_validation
+
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Div, Field, HTML, Submit
+from crispy_forms.bootstrap import PrependedText, FormActions, StrictButton
+
+from book.helpers import add_book_helper
+from .models import Book
 
 
 class LoginForm(AuthenticationForm):
@@ -99,3 +110,14 @@ class ChangePassword(forms.Form):
     class Meta:
         model = get_user_model()
         fields = ['old_password', 'password1', 'password2']
+
+
+class AddBookForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(AddBookForm, self).__init__(*args, **kwargs)
+        self.helper = add_book_helper
+
+    class Meta:
+        model = Book
+        fields = ['name', 'price', 'author', 'pub', 'published_date', 'image', 'availability']

@@ -6,13 +6,16 @@ from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.contrib.auth.tokens import PasswordResetTokenGenerator as activation_user
 from django.template import loader
-from django.urls import reverse
-from django.db.models import Avg, Func
-from decimal import Decimal
-from operator import itemgetter
+from django.views.generic.edit import CreateView
 
-from .forms import SignUpForm, ChangePassword
+from .forms import SignUpForm, ChangePassword, AddBookForm
 from .models import *
+
+
+class BookCreate(CreateView):
+    template_name = 'book_create.html'
+    redirect_url = '/'
+    form_class = AddBookForm
 
 
 class Round(Func):
@@ -155,6 +158,7 @@ def product_page(request, book_id):
                    'user_rating': filter_rating,
                    'author_rating': auth_rating,
                    'publisher_rating': pub_rating,
+                   'title': product.name,
                    }
         return render(request, 'book_page.html', context)
     else:
@@ -173,6 +177,7 @@ def publisher_page(request, publisher_id):
         context = {'selected_publisher': selected_publisher,
                    'selected_publisher_object': selected_publisher_object,
                    'selected_author': selected_author_object,
+                   'title': selected_publisher_object.name,
                    }
         return render(request, 'publisher_page.html', context)
     except selected_publisher_object.DoesNotExist:
@@ -190,6 +195,7 @@ def author_page(request, author_id):
         context = {'selected_author': selected_author,
                    'selected_publisher_object': selected_publisher_object,
                    'selected_author_object': selected_author_object,
+                   'title': selected_author_object.name,
                    }
         return render(request, 'author_page.html', context)
     except selected_author_object.DoesNotExist:
