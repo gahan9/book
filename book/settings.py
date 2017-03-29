@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'details',
+    'crispy_forms',
 
     # 'django.contrib.admindocs',
     # 'registration',
@@ -145,6 +146,7 @@ EMAIL_HOST_PASSWORD = 'r@123456'
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
