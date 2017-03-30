@@ -7,24 +7,13 @@ from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.contrib.auth.tokens import PasswordResetTokenGenerator as activation_user
 from django.template import loader
-from django.views.generic.edit import CreateView
+from django.core.urlresolvers import reverse_lazy
+from django.views.generic.edit import CreateView, FormView
 from django.contrib import messages
 
 from .forms import SignUpForm, ChangePassword, AddBookForm
 from .models import *
 
-
-class BookCreate(CreateView):
-    template_name = 'book_create.html'
-    form_class = AddBookForm
-    success_url = '/'
-    success_message = "%(calculated_field)s added successfully"
-
-    def get_success_message(self, cleaned_data):
-        return self.success_message % dict(
-            cleaned_data,
-            calculated_field=self.object.calculated_field,
-        )
 
 class Round(Func):
     function = 'ROUND'
@@ -37,6 +26,17 @@ def index(request):
     all_books = Book.objects.all().annotate(u_rating=Round(Avg('book_rating__rating'))).order_by('u_rating')
     context = {'bl': all_books}
     return render(request, 'book.html', context)
+
+
+class BookCreate(CreateView, FormView):
+    template_name = 'book_create.html'
+    form_class = AddBookForm
+    success_url = reverse_lazy('index')
+
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, "Book has been added.")
+        return super(FormView, self).form_valid(form)
 
 
 def delete_entry(request):
