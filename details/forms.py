@@ -11,7 +11,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Field, HTML, Submit
 from crispy_forms.bootstrap import PrependedText, FormActions, StrictButton
 
-from book.helpers import add_book_helper
+from book.helpers import add_book_helper, search_helper
 from .models import Book
 
 
@@ -133,3 +133,13 @@ class EditBookForm(forms.ModelForm):
         model = Book
         fields = ['name', 'price', 'author', 'pub', 'published_date', 'image']
 
+
+class SearchBookForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(SearchBookForm, self).__init__(*args, **kwargs)
+        self.helper = search_helper
+
+    class Meta:
+        model = Book
+        fields = ['name', 'author', 'pub']
