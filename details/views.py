@@ -13,6 +13,7 @@ from django.views.generic import ListView
 from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView, FormView, UpdateView, DeleteView
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .forms import *
 from .models import *
@@ -24,9 +25,12 @@ class Round(Func):
 
 
 # @login_required(login_url='login/')
-class HomePageView(ListView):
+class HomePageView(LoginRequiredMixin, ListView, FormView):
     """	Show all data from database """
+    login_url = 'login/'
     model = Book
+    success_url = '/results/'
+    form_class = SearchBookForm
     template_name = 'book.html'
     queryset = Book.objects.all().annotate(u_rating=Round(Avg('book_rating__rating')))
     ordering = '-u_rating'
