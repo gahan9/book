@@ -8,6 +8,9 @@ from django.core.mail import send_mail
 from django.contrib.auth.tokens import PasswordResetTokenGenerator as activation_user
 from django.template import loader
 from django.core.urlresolvers import reverse_lazy
+from django.views import View
+from django.views.generic import ListView
+from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView, FormView, UpdateView, DeleteView
 from django.contrib import messages
 
@@ -20,12 +23,13 @@ class Round(Func):
     template = '%(function)s(%(expressions)s, 1)'
 
 
-@login_required(login_url='login/')
-def index(request):
+# @login_required(login_url='login/')
+class HomePageView(ListView):
     """	Show all data from database """
-    all_books = Book.objects.all().annotate(u_rating=Round(Avg('book_rating__rating'))).order_by('u_rating')
-    context = {'bl': all_books}
-    return render(request, 'book.html', context)
+    model = Book
+    template_name = 'book.html'
+    queryset = Book.objects.all().annotate(u_rating=Round(Avg('book_rating__rating')))
+    ordering = '-u_rating'
 
 
 class BookCreate(SuccessMessageMixin, CreateView):
@@ -57,22 +61,19 @@ class BookDeleteView(SuccessMessageMixin, DeleteView):
         return super(BookDeleteView, self).delete(request, *args, **kwargs)
 
 
-def stock_availability(request):
-    if request.is_ajax():
+class ToggleStockAvailability(SuccessMessageMixin, View):
+    def get(self, request):
+        print(request.GET)
         switch_id = request.GET.get('switch_id')
         switch_status = request.GET.get('switch_status')
-        print(switch_status, switch_id, type(switch_status), sep=" ************ ")
-        book = Book.objects.get(pk=switch_id)
         if switch_status == 'true':
-            book.availability = True
+            switch_status = True
         else:
-            book.availability = False
-        book.save()
+            switch_status = False
+        Book.objects.filter(pk=switch_id).update(availability=switch_status)
+        book = Book.objects.get(pk=switch_id)
         message = "Book: " + book.name + " id: " + str(switch_id) + " New status is : " + str(book.availability)
         data = {'message': message}
-        return JsonResponse(data)
-    else:
-        data = {'message': 'Invalid Request'}
         return JsonResponse(data)
 
 
