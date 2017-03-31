@@ -9,7 +9,7 @@
 <div class="container">
     <img src="{% static '/media/images/' %}{{ p.image }}" alt="No image found" class="pull-left img-rounded sizeMedium gap">
         <h1 class="text-center">{{ p.name }}</h1>
-        <p >Published By <a href="{% url 'publisher_page' publisher_id=p.pub_id %}">{{ p.pub }} </a> (Rated {{ publisher_rating }} out of 5)
+        <p >Published By <a href="{% url 'publisher_page' publisher_id=p.pub_id %}">{{ p.pub }} </a> (Rated {{ p.publisher_rating }} out of 5)
             <br>
             Written By:
             {% for a in author_rating %}<a href="{% url 'author_page' author_id=a.id %}">{{ a }} </a>(Rated {{ a.author_avg_rating }} out of 5){% if not forloop.last %} & {% endif %}{% endfor %}
@@ -19,16 +19,8 @@
         <form class="form-inline" action="." method="post">
             {% csrf_token %}
             <input class="form-control" type="number"  min="1" max="5" name="user_rated">
-            <input class="btn btn-default" type="submit" value="Rate">
+            <input class="btn btn-default btn-primary" type="submit" value="Rate">
         </form>
         </p>
 </div>
-{#        console.log($('input[name=rating-input-2]:checked').val())#}
-{#       $("#rating") // select the radio by its id#}
-{#    .change(function(){ // bind a function to the change event#}
-{#        if( $(this).is(":checked") ){ // check if the radio is checked#}
-{#            var val = $(this).val(); // retrieve the value#}
-{#            console.log(val)#}
-{#        }#}
-{#    });#}
 {% endblock %}
