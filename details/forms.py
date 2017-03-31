@@ -121,3 +121,15 @@ class AddBookForm(forms.ModelForm):
     class Meta:
         model = Book
         fields = ['name', 'price', 'author', 'pub', 'published_date', 'image']
+
+
+class EditBookForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(EditBookForm, self).__init__(*args, **kwargs)
+        self.helper = add_book_helper
+
+    class Meta:
+        model = Book
+        fields = ['name', 'price', 'author', 'pub', 'published_date', 'image']
+
