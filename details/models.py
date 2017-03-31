@@ -31,10 +31,6 @@ class Author(models.Model):
     maximum_book = models.IntegerField(default=0)
     minimum_book = models.IntegerField(default=0)
 
-    def Round(Func):
-        function = 'ROUND'
-        template = '%(function)s(%(expressions)s, 1)'
-
     @property
     def author_rating(self):
         book_instance = Book.objects.filter(author=self)
