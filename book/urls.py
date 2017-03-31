@@ -6,7 +6,7 @@ from django.contrib.auth import views
 from django.contrib.auth.forms import *
 
 from details.forms import LoginForm, SignUpForm
-from details.views import index, register, change_password, activate_new_user
+from details.views import *
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
