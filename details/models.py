@@ -16,6 +16,12 @@ class Round(Func):
 class Publisher(models.Model):
     name = models.CharField(max_length=100)
 
+    @property
+    def publisher_rating(self):
+        book_instance = Book.objects.filter(pub=self)
+        book_filtered = BookRating.objects.filter(book=book_instance).aggregate(avg=Round(Avg('rating')))
+        return book_filtered['avg']
+
     def __str__(self):
         return self.name
 
