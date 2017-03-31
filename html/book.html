@@ -7,19 +7,22 @@
 {% endblock %}
 
 {% block content %}
-    <div class="text-center container-fluid alert alert-success" role="alert">
-        {% if messages %}
+    <div class="container-fluid">
+    {% if messages %}
+        <div class="text-center alert alert-success" role="alert">
                 {% for message in messages %}
                 {{ message }}
                 {% endfor %}
-        {% endif %}
+        </div>
+    {% endif %}
     </div>
 <div class="container">
     <div class="container">
         <h1 class="text-center">Book Inventory</h1>
-        <form action="{% url 'search' %}" method="get">
             <table class="table">
                 <tr>
+                    <form action="{% url 'search' %}" method="get">
+
                     <td>
                         <input type="text" class="form-control" name="id" placeholder="Search by Id">
                     </td>
@@ -32,7 +35,8 @@
                     <td>
                         <input type="text" class="form-control" name="publication" placeholder="Search by Publisher">
                     </td>
-                    <td><input type="submit" class="btn btn-default" value="Go"></td>
+                    <td><input type="submit" class="btn btn-default btn-info" value="Go"></td>
+                    </form>
                 </tr>
             </table>
 
@@ -47,11 +51,12 @@
                     <th><span>Price</span></th>
                     <th><span>User Rating</span></th>
                     <th><span>Delete</span></th>
+                    <th><span>Edit</span></th>
                     <th><span>In stock?</span></th>
                 </tr>
                 </thead>
                 <tbody class="book_data">
-                {% for entry in bl %}
+                {% for entry in object_list %}
                     <tr class={{ entry.id }}>
                         <td>
                             <a href="{% url 'product_page' book_id=entry.id %}">{{ entry.id }}</a>
@@ -67,12 +72,18 @@
                         {% if entry.u_rating %}
                             <td>{{ entry.u_rating }}</td>
                         {% else %}
-                            <td>Not Rated</td>
+                            <td> Not Rated</td>
                         {% endif %}
                         <td>
-                            <button type="button" name="del" class="btn btn-default del_button">
-                                <span class="glyphicon glyphicon-remove"></span>
-                            </button>
+                            <form action="{% url 'delete_book' pk=entry.pk %}" method="POST">
+                                {% csrf_token %}
+                                    <input class="btn btn-default btn-danger" type="submit" value="Delete"/>
+                            </form>
+                        </td>
+                        <td>
+                            <a href="{% url 'edit_book' pk=entry.pk %}" type="button" name="edit" class="btn btn-default edit_button">
+                                <span class="glyphicon glyphicon-edit"></span>
+                            </a>
                         </td>
                         <td>
                             <label class="switch">
@@ -83,7 +94,6 @@
                 {% endfor %}
                 </tbody>
             </table>
-        </form>
     </div>
 </div>
 {% endblock %}
@@ -97,37 +107,13 @@
                 window.location.href = '{% url 'add_book' %}/';
             });
 
-            $(".del_button").on('click', function () {
-                if(confirm("Are you sure about delete this?")) {
-                    var et = $(this).parents(':eq(1)').prop('className');
-                    var entry = JSON.stringify(et);
-                    $(this).parents(':eq(1)').remove();
-                    console.log('delete clicked......' + et);
-                    console.log($(this));
-                    $.ajax({
-                        url: '/delete_entry/',
-                        type: 'GET',
-                        data: {entry_id: entry},
-                        success: function (data) {
-                            toastr.success(data['message']);
-                        },
-                        failure: function (data) {
-                            toastr.error("Some error here");
-                        }
-                    })
-                }
-                else{
-                    return false;
-                }
-            });
-
             $(".toggle_button").change(function () {
                 var switch_id = $(this).parents(':eq(3)').prop('className');
                 var switch_status = $(this).is(':checked');
                 console.log(switch_id, switch_status);
                 // debugger;
                 $.ajax({
-                    url: '/stock_availability/',
+                    url: "{% url 'stock_change' %}/",
                     type: 'GET',
                     data: {switch_id: switch_id, switch_status: switch_status},
                     success: function (data) {
