@@ -8,10 +8,10 @@ from django.core.mail import send_mail
 from django.contrib.auth.tokens import PasswordResetTokenGenerator as activation_user
 from django.template import loader
 from django.core.urlresolvers import reverse_lazy
-from django.views.generic.edit import CreateView, FormView
+from django.views.generic.edit import CreateView, FormView, UpdateView, DeleteView
 from django.contrib import messages
 
-from .forms import SignUpForm, ChangePassword, AddBookForm
+from .forms import *
 from .models import *
 
 
@@ -28,28 +28,33 @@ def index(request):
     return render(request, 'book.html', context)
 
 
-class BookCreate(CreateView, FormView):
+class BookCreate(SuccessMessageMixin, CreateView):
     template_name = 'book_create.html'
     form_class = AddBookForm
     success_url = reverse_lazy('index')
-
-    def form_valid(self, form):
-        form.save()
-        messages.success(self.request, "Book has been added.")
-        return super(FormView, self).form_valid(form)
+    success_message = "Book '%(name)s' was added to Inventory successfully!"
 
 
-def delete_entry(request):
-    if request.is_ajax():
-        entry_id = json.loads(request.GET.get('entry_id'))
-        book_to_delete = Book.objects.get(pk=entry_id)
-        message = "Book " + book_to_delete.name + " with id: " + entry_id + " deleted successfully"
-        book_to_delete.delete()
-        data = {'message': message}
-        return JsonResponse(data)
-    else:
-        data = {'message': 'Invalid Request'}
-        return JsonResponse(data)
+class BookEditView(SuccessMessageMixin, UpdateView):
+    template_name = 'book_create.html'
+    form_class = EditBookForm
+    model = Book
+    success_url = reverse_lazy('index')
+    success_message = "Detail of '%(name)s' successfully updated!"
+
+
+class BookDeleteView(SuccessMessageMixin, DeleteView):
+    model = Book
+    success_url = '/'
+    success_message = "'%(name)s'  deleted..."
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        name = (self.object.name)
+        request.session['name'] = name
+        message = 'Book: ' + request.session['name'] + ' deleted successfully'
+        messages.success(self.request, message)
+        return super(BookDeleteView, self).delete(request, *args, **kwargs)
 
 
 def stock_availability(request):
@@ -58,13 +63,10 @@ def stock_availability(request):
         switch_status = request.GET.get('switch_status')
         print(switch_status, switch_id, type(switch_status), sep=" ************ ")
         book = Book.objects.get(pk=switch_id)
-        print("Before loop : ---------------->", book.availability)
         if switch_status == 'true':
             book.availability = True
-            print("In if : ---------------->", book.availability)
         else:
             book.availability = False
-            print("In else : ---------------->", book.availability)
         book.save()
         message = "Book: " + book.name + " id: " + str(switch_id) + " New status is : " + str(book.availability)
         data = {'message': message}
