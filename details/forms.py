@@ -134,11 +134,29 @@ class EditBookForm(forms.ModelForm):
         fields = ['name', 'price', 'author', 'pub', 'published_date', 'image']
 
 
+# class CustomModelFilter(forms.ModelChoiceField):
+#
+#     def label_from_instance(self, obj):
+#         return "{}".format(obj.name)
+
+
 class SearchBookForm(forms.ModelForm):
+    # author = CustomModelFilter(queryset=Book.objects.filter(author='1'))
 
     def __init__(self, *args, **kwargs):
         super(SearchBookForm, self).__init__(*args, **kwargs)
         self.helper = search_helper
+        # self.fields["pub"].widget = forms.widgets.TextInput()
+        # self.fields["pub"].help_text = "Name of publisher"
+        # self.fields["pub"].queryset = Book.objects.filter(pub__name__icontains=request.pub)
+        # self.fields["author"].widget = forms.widgets.TextInput()
+        # self.fields["author"].help_text = "Name of author"
+        # self.fields["author"].queryset = Book.objects.filter(author__name__icontains=self.form.cleaned_data['author'])
+        self.fields['name'].required = False
+        self.fields['author'].required = False
+        self.fields['pub'].required = False
+        # form_id = self.instance.id
+        # id_hidden = '<input type="hidden" id="form_id" value=' + str(form_id) + ' />'
 
     class Meta:
         model = Book
