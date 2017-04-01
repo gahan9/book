@@ -29,12 +29,33 @@ class HomePageView(LoginRequiredMixin, ListView, FormView):
     """	Show all data from database """
     login_url = 'login/'
     model = Book
-    success_url = '/results/'
+    success_url = reverse_lazy('index')
     form_class = SearchBookForm
     template_name = 'book.html'
     queryset = Book.objects.all().annotate(u_rating=Round(Avg('book_rating__rating')))
     ordering = '-u_rating'
 
+    def form_valid(self, form):
+        request_search = {
+            'name__icontains': form.cleaned_data['name'],
+            'author': form.cleaned_data['author'],
+            'pub': form.cleaned_data['pub'],
+        }
+        req_data = dict(filter(lambda x: x[1], request_search.items()))
+        print(req_data)
+        self.queryset = Book.objects.filter(**req_data)
+        print(self.queryset, "****************")
+        if req_data:
+            return render(self.request, 'results.html', {'object_list': self.queryset})
+            # return super(HomePageView, self).form_valid(form)
+        else:
+            error = 'No match found'
+            return render(request, 'error.html', {'error': error})
+
+
+# class SearchBookView(ListView, FormView):
+#     model = Book
+#     template_name = 'results_old.html'
 
 class BookCreate(SuccessMessageMixin, CreateView):
     template_name = 'book_create.html'
