@@ -24,7 +24,6 @@ add_book_helper.layout = Layout(
     Div(FormActions(Submit('Save changes', value="Save", css_class="btn-primary align-right"),), css_class="container")
 )
 
-
 search_helper = FormHelper()
 search_helper.form_tag = True
 # search_helper.form_id = 'id-registerform'
@@ -44,3 +43,14 @@ search_helper.layout = Layout(
     )
 )
 
+password_change_helper = FormHelper()
+password_change_helper.form_tag = True
+password_change_helper.form_class = 'form-inline'
+password_change_helper.form_show_labels = False
+password_change_helper.form_show_errors = True
+password_change_helper.layout = Layout(
+    'old_password'
+    'password1',
+    'password2',
+    FormActions(Submit('change', value="Change Now", css_class="signin button"))
+)
