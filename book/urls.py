@@ -18,6 +18,6 @@ urlpatterns = [
         name='login'),
     url(r'^logout/$', views.logout, {'next_page': '/login'}),
     url(r'', include('details.urls')),
-    url(r'^password_change', change_password, name="password_change")
+    url(r'^password_change', ChangeProfilePassword.as_view(), name="password_change")
     # url(r'^accounts/', include('registration.backends.simple.urls')),
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
