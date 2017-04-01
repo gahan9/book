@@ -1,4 +1,6 @@
 import json
+
+from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import render, render_to_response
 from django.http import HttpResponseRedirect, HttpResponse, Http404, request, JsonResponse
@@ -6,6 +8,7 @@ from django.core.mail import send_mail
 from django.contrib.auth.tokens import PasswordResetTokenGenerator as activation_user
 from django.template import loader
 from django.core.urlresolvers import reverse_lazy
+from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView, FormView, UpdateView, DeleteView
@@ -67,7 +70,7 @@ class BookDeleteView(SuccessMessageMixin, DeleteView):
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
-        name = (self.object.name)
+        name = self.object.name
         request.session['name'] = name
         message = 'Book: ' + request.session['name'] + ' deleted successfully'
         messages.success(self.request, message)
@@ -133,18 +136,24 @@ def activate_new_user(request, pk, token):
         return HttpResponse("Invalid Verification Link")
 
 
-def change_password(request):
-    if request.method == 'POST':
-        current_user = request.user.username
-        reset_form = ChangePassword(request.POST, user=request.user)
-        if reset_form.is_valid():
-            u = User.objects.get(username__exact=current_user)
-            u.set_password(reset_form.cleaned_data['password2'])
-            u.save()
-            return HttpResponseRedirect('/')
-    else:
-        reset_form = ChangePassword(user=request.user)
-    return render(request, 'change_password.html', {'reset_form': reset_form})
+class ChangeProfilePassword(FormView):
+    form_class = ChangePassword
+    success_url = reverse_lazy('login')
+    template_name = 'change_password.html'
+
+    def get_form_kwargs(self):
+        kwargs = super(ChangeProfilePassword, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, 'Your Password is changed successfully.')
+        return super(ChangeProfilePassword, self).form_valid(form)
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(ChangeProfilePassword, self).dispatch(*args, **kwargs)
 
 
 # @login_required(login_url='login/')
@@ -158,8 +167,8 @@ def product_page(request, book_id):
         if current_user_rated:
             if not rated_stat.exists():
                 now_rated = BookRating.objects.create(user=current_user,
-                                       rating=int(current_user_rated),
-                                       book=product)
+                                                      rating=int(current_user_rated),
+                                                      book=product)
                 now_rated.save()
             else:
                 return HttpResponse("You Have already Rated")
