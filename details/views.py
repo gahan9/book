@@ -2,15 +2,12 @@ import json
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import render, render_to_response
 from django.http import HttpResponseRedirect, HttpResponse, Http404, request, JsonResponse
-from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.contrib.auth.tokens import PasswordResetTokenGenerator as activation_user
 from django.template import loader
 from django.core.urlresolvers import reverse_lazy
 from django.views import View
 from django.views.generic import ListView
-from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView, FormView, UpdateView, DeleteView
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -36,26 +33,17 @@ class HomePageView(LoginRequiredMixin, ListView, FormView):
     ordering = '-u_rating'
 
     def form_valid(self, form):
+        author_name = form.cleaned_data['author']
+        publisher_name = form.cleaned_data['pub']
         request_search = {
             'name__icontains': form.cleaned_data['name'],
-            'author': form.cleaned_data['author'],
-            'pub': form.cleaned_data['pub'],
+            'author__name__icontains': author_name,
+            'pub__name__icontains': publisher_name,
         }
         req_data = dict(filter(lambda x: x[1], request_search.items()))
-        print(req_data)
         self.queryset = Book.objects.filter(**req_data)
-        print(self.queryset, "****************")
-        if req_data:
-            return render(self.request, 'results.html', {'object_list': self.queryset})
-            # return super(HomePageView, self).form_valid(form)
-        else:
-            error = 'No match found'
-            return render(request, 'error.html', {'error': error})
+        return render(self.request, 'results.html', {'object_list': self.queryset})
 
-
-# class SearchBookView(ListView, FormView):
-#     model = Book
-#     template_name = 'results_old.html'
 
 class BookCreate(SuccessMessageMixin, CreateView):
     template_name = 'book_create.html'
@@ -164,11 +152,9 @@ def product_page(request, book_id):
     product = Book.objects.get(pk=book_id)
     current_user = request.user
     rated_stat = BookRating.objects.filter(user=current_user, book__id=book_id).values()
-    print(product, type(product), rated_stat, type(rated_stat))
 
     if request.method == "POST":
         current_user_rated = request.POST.get('user_rated', None)
-        print(current_user_rated, type(current_user_rated), sep='\n')
         if current_user_rated:
             if not rated_stat.exists():
                 now_rated = BookRating.objects.create(user=current_user,
@@ -237,25 +223,3 @@ def author_page(request, author_id):
     except selected_author_object.DoesNotExist:
         error = 'No author exist of this referance'
         return render(request, 'error.html', {'error': error})
-
-
-def search(request):
-    """ Implemented to sniff entries in database """
-    ls = {"pk": request.GET.get('id', None),
-          "name__icontains": request.GET.get('name', None),
-          "author__name__icontains": request.GET.get('author', None),
-          "pub__name__icontains": request.GET.get('publication', None)
-          }
-
-    req_data = dict(filter(lambda x: x[1], ls.items()))
-
-    id_ = request.GET.get('id', None)
-
-    if req_data:
-        books = Book.objects.filter(**req_data)
-        return render(request, 'results.html', {'books': books},
-                      {'query': id_})
-    else:
-        error = 'No match found'
-        return render(request, 'error.html', {'error': error})
-
