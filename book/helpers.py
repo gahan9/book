@@ -24,6 +24,7 @@ add_book_helper.layout = Layout(
     Div(FormActions(Submit('Save changes', value="Save", css_class="btn-primary align-right"),), css_class="container")
 )
 
+
 search_helper = FormHelper()
 search_helper.form_tag = True
 # search_helper.form_id = 'id-registerform'
@@ -35,11 +36,10 @@ search_helper.form_show_labels = True   # default = True
 # search_helper.field_class = 'col-lg-6'
 search_helper.layout = Layout(
     Row(
-    InlineField('pk', css_class='form-control'),
-    InlineField('name', css_class='form-control'),
-    InlineField('author', css_class='form-control'),
-    InlineField('pub', css_class='form-control'),
-    FormActions(Submit('Save changes', value="Search", css_class="btn-info align-right"),)
+        InlineField('name', css_class='form-control'),
+        InlineField('author', css_class='form-control'),
+        InlineField('pub', css_class='form-control'),
+        FormActions(Submit('Save changes', value="Search", css_class="btn-info align-right"),)
     )
 )
 
