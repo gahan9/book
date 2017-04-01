@@ -1,0 +1,52 @@
+{% extends 'index.html' %}
+
+{% block content %}
+    <head>         
+    <title>Search Result</title>
+    </head>
+
+    <div class="container-fluid">
+    {% if messages %}
+        <div class="text-center alert alert-success" role="alert">
+                {% for message in messages %}
+                {{ message }}
+                {% endfor %}
+        </div>
+    {% endif %}
+    </div>
+
+    <body>
+        <div class="container">
+         {% if object_list %}
+            <h3 class="alert alert-success text-center">Found {{ object_list|length }} book{{ object_list|pluralize }} in matching criteria.</h3>
+            <ul>                              
+                    <table class="table">
+                        <thead>
+                          <tr>
+                            <th><span>ID</span></th>
+                            <th><span>Book Name</span></th>
+                            <th><span>Author</span></th>
+                            <th><span>Publisher</span></th>
+                            <th><span>Price</span></th>
+                          </tr>
+                        </thead>
+                {% for b in object_list %}
+                        <tbody>
+                          <tr>
+                            <td>{{ b.id }}</td>
+                            <td>{{ b.name }}</td>
+                            <td>{% for auth in b.author.all %}{{ auth }},{% endfor %}</td>
+                            <td>{{ b.pub }}</td>
+                            <td>{{ b.price }}</td>
+                          </tr>
+                        </tbody>
+                {% endfor %}           
+                    </table>
+
+            </ul>       
+        {% else %}           
+            <p>No books matched your search criteria.</p>       
+        {% endif %}
+    </div>     
+    </body>
+{% endblock %}
