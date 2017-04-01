@@ -3,7 +3,8 @@
 from __future__ import unicode_literals
 
 from django import forms
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, PasswordResetForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, \
+    PasswordResetForm
 from django.contrib.auth import get_user_model
 from django.contrib.auth import password_validation
 
@@ -12,7 +13,7 @@ from crispy_forms.layout import Layout, Div, Field, HTML, Submit
 from crispy_forms.bootstrap import PrependedText, FormActions, StrictButton
 
 from book.helpers import add_book_helper, search_helper
-from .models import Book
+from .models import *
 
 
 class LoginForm(AuthenticationForm):
@@ -113,7 +114,6 @@ class ChangePassword(forms.Form):
 
 
 class AddBookForm(forms.ModelForm):
-
     def __init__(self, *args, **kwargs):
         super(AddBookForm, self).__init__(*args, **kwargs)
         self.helper = add_book_helper
@@ -124,7 +124,6 @@ class AddBookForm(forms.ModelForm):
 
 
 class EditBookForm(forms.ModelForm):
-
     def __init__(self, *args, **kwargs):
         super(EditBookForm, self).__init__(*args, **kwargs)
         self.helper = add_book_helper
@@ -140,23 +139,20 @@ class EditBookForm(forms.ModelForm):
 #         return "{}".format(obj.name)
 
 
-class SearchBookForm(forms.ModelForm):
-    # author = CustomModelFilter(queryset=Book.objects.filter(author='1'))
+class SearchBookForm(forms.Form):
+    name = forms.CharField(max_length=100)
+    author = forms.CharField(max_length=100)
+    pub = forms.CharField(max_length=100)
 
     def __init__(self, *args, **kwargs):
         super(SearchBookForm, self).__init__(*args, **kwargs)
         self.helper = search_helper
-        # self.fields["pub"].widget = forms.widgets.TextInput()
-        # self.fields["pub"].help_text = "Name of publisher"
-        # self.fields["pub"].queryset = Book.objects.filter(pub__name__icontains=request.pub)
         # self.fields["author"].widget = forms.widgets.TextInput()
-        # self.fields["author"].help_text = "Name of author"
-        # self.fields["author"].queryset = Book.objects.filter(author__name__icontains=self.form.cleaned_data['author'])
+        # # self.fields["author"].help_text = "Name of author"
+        # # self.fields["author"].queryset = Book.objects.all()
         self.fields['name'].required = False
         self.fields['author'].required = False
         self.fields['pub'].required = False
-        # form_id = self.instance.id
-        # id_hidden = '<input type="hidden" id="form_id" value=' + str(form_id) + ' />'
 
     class Meta:
         model = Book
