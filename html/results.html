@@ -1,40 +1,108 @@
 {% extends 'index.html' %}
-{% block content %}
-    <head>         
-    <title>Book Search</title>     
-    </head>     
-    <body>
-        <div id="wrapper">       
-         {% if books %}           
-            <h1>Found {{ books|length }} book{{ books|pluralize }} in matching criteria</h1>
-            <ul>                              
-                    <table id="keywords" cellspacing="0" cellpadding="0">
-                        <thead>
-                          <tr>
-                            <th><span>ID</span></th>
-                            <th><span>Book Name</span></th>
-                            <th><span>Author</span></th>
-                            <th><span>Publisher</span></th>
-                            <th><span>Price</span></th>
-                          </tr>
-                        </thead>
-                {% for b in books %}        
-                        <tbody>
-                          <tr>
-                            <td class="lalign">{{ b.id }}</td>
-                            <td>{{ b.name }}</td>
-                            <td>{% for auth in b.author.all %}{{ auth }},{% endfor %}</td>
-                            <td>{{ b.pub }}</td>
-                            <td>{{ b.price }}</td>
-                          </tr>
-                        </tbody>
-                {% endfor %}           
-                    </table>
+<title>Book Inventory</title>
 
-            </ul>       
-        {% else %}           
-            <p>No books matched your search criteria.</p>       
-        {% endif %}
-    </div>     
-    </body>
+{% block content %}
+    <div class="container-fluid">
+    {% if messages %}
+        <div class="text-center alert alert-success" role="alert">
+                {% for message in messages %}
+                {{ message }}
+                {% endfor %}
+        </div>
+    {% endif %}
+    </div>
+<div class="container">
+    <div class="container">
+        <h1 class="text-center">Search Result</h1>
+            {% if object_list %}
+                <h3 class="alert alert-success text-center">Found {{ object_list|length }} book{{ object_list|pluralize }} in matching criteria.</h3>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th><span>ID</span></th>
+                    <th><span>Book Title</span></th>
+                    <th><span>Author</span></th>
+                    <th><span>Publisher</span></th>
+                    <th><span>Price</span></th>
+                    <th><span>User Rating</span></th>
+                    <th><span>Delete</span></th>
+                    <th><span>Edit</span></th>
+                    <th><span>In stock?</span></th>
+                </tr>
+                </thead>
+                <tbody class="book_data">
+                {% for entry in object_list %}
+                    <tr class={{ entry.id }}>
+                        <td>
+                            <a href="{% url 'product_page' book_id=entry.id %}">{{ entry.id }}</a>
+                        </td>
+                        <td >{{ entry.name }}</td>
+                        <td>{% for auth in entry.author.all %}
+                            <a href="{% url 'author_page' author_id=auth.id %}">{{ auth }}</a>
+                            {% if not forloop.last %},{% endif %}{% endfor %}</td>
+                        <td>
+                            <a href="{% url 'publisher_page' publisher_id=entry.pub_id %}">{{ entry.pub }}</a>
+                        </td>
+                        <td>{{ entry.price }}</td>
+                        {% if entry.u_rating %}
+                            <td>{{ entry.u_rating }}</td>
+                        {% else %}
+                            <td> Not Rated</td>
+                        {% endif %}
+                        <td>
+                            <form action="{% url 'delete_book' pk=entry.pk %}" method="POST">
+                                {% csrf_token %}
+                                    <input class="btn btn-default btn-danger" type="submit" value="Delete"/>
+                            </form>
+                        </td>
+                        <td>
+                            <a href="{% url 'edit_book' pk=entry.pk %}" type="button" name="edit" class="btn btn-default edit_button">
+                                <span class="glyphicon glyphicon-edit"></span>
+                            </a>
+                        </td>
+                        <td>
+                            <label class="switch">
+                                <input type="checkbox" class="toggle_button" {% if entry.availability %} checked {% endif %} data-toggle="toggle">
+                            </label>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+    {% else %}
+    <h3 class="alert alert-danger text-center">No record found...</h3>
+    {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        $(document).ready(function () {
+            $(".btn.btn-success").on('click',function () {
+                console.log($(this));
+                console.log("add book clicked");
+                window.location.href = '{% url 'add_book' %}/';
+            });
+
+            $(".toggle_button").change(function () {
+                var switch_id = $(this).parents(':eq(3)').prop('className');
+                var switch_status = $(this).is(':checked');
+                console.log(switch_id, switch_status);
+                // debugger;
+                $.ajax({
+                    url: "{% url 'stock_change' %}/",
+                    type: 'GET',
+                    data: {switch_id: switch_id, switch_status: switch_status},
+                    success: function (data) {
+                        toastr.success(data['message']);
+                    },
+                    failure: function (data) {
+                        toastr.error("Some error here");
+                    }
+                });
+            });
+
+    });
+    </script>
 {% endblock %}
