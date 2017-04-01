@@ -20,7 +20,7 @@ add_book_helper.layout = Layout(
     Field('author', css_class='form-control'),
     Field('pub', css_class='form-control'),
     PrependedText('price', "₹", css_class='form-control', ),
-    Field('published_date', css_class='form-control datepicker'),
+    Field('published_date', css_class='form-control'),
     Div(FormActions(Submit('Save changes', value="Save", css_class="btn-primary align-right"),), css_class="container")
 )
 
@@ -39,7 +39,8 @@ search_helper.layout = Layout(
         InlineField('name', css_class='form-control'),
         InlineField('author', css_class='form-control'),
         InlineField('pub', css_class='form-control'),
-        FormActions(Submit('Save changes', value="Search", css_class="btn-info align-right"),)
+        FormActions(Submit('Save changes', value="Search", css_class="btn-info align-right"),),
+        css_class="text-center"
     )
 )
 
