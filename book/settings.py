@@ -12,6 +12,7 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 SITE_URL = 'jarvis.py'
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -23,13 +24,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'details',
     'crispy_forms',
-
-    # 'django.contrib.admindocs',
-    # 'registration',
-    # 'django_otp',
-    # 'django_otp.plugins.otp_hotp',
-    # 'django_otp.plugins.otp_totp',
-    # 'django_otp.plugins.otp_static',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -62,6 +57,14 @@ TEMPLATES = [
     },
 ]
 
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
+
 WSGI_APPLICATION = 'book.wsgi.application'
 
 
@@ -72,8 +75,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        'USER' : 'root',
-        'PASS' : 'root',
+        'USER': 'root',
+        'PASS': 'root',
     }
 }
 
