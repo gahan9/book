@@ -3,7 +3,8 @@
 from __future__ import unicode_literals
 
 from django import forms
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, PasswordResetForm, PasswordChangeForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, PasswordResetForm, PasswordChangeForm, \
+    SetPasswordForm
 from django.contrib.auth import get_user_model
 from django.contrib.auth import password_validation
 
@@ -61,26 +62,15 @@ class SignUpForm(UserCreationForm, PasswordResetForm):
 
 
 class ChangePassword(PasswordChangeForm):
-    old_password = forms.CharField(label="Current Password", widget=forms.PasswordInput(attrs={'name': 'old_password'}),)
-    password1 = forms.CharField(
-        label="Password", max_length=30, strip=False,
-        widget=forms.TextInput(
-            attrs={'class': 'form-control',
-                   'name': 'new password',
-                   'type': 'password'}))
-    password2 = forms.CharField(label="Password confirmation", strip=False, max_length=30,
-                                widget=forms.TextInput(attrs={'class': 'form-control',
-                                                              'name': 'new password confirmation',
-                                                              'type': 'password'}))
 
     def __init__(self, *args, **kwargs):
         super(ChangePassword, self).__init__(*args, **kwargs)
         self.helper = password_change_helper
-        # self.fields['password1'].label = ""
+        self.use_required_attribute = False
 
     class Meta:
         model = get_user_model()
-        fields = ['old_password', 'password1', 'password2']
+        fields = ['old_password', 'new_password1', 'new_password2']
 
 
 class AddBookForm(forms.ModelForm):
