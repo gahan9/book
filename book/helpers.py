@@ -45,12 +45,18 @@ search_helper.layout = Layout(
 
 password_change_helper = FormHelper()
 password_change_helper.form_tag = True
-password_change_helper.form_class = 'form-inline'
-password_change_helper.form_show_labels = False
+password_change_helper.form_class = 'form-horizontal'
+password_change_helper.form_show_labels = True
 password_change_helper.form_show_errors = True
+password_change_helper.error_text_inline = False
+password_change_helper.help_text_inline = False
+search_helper.label_class = 'col-lg-2'
+search_helper.field_class = 'col-lg-6'
 password_change_helper.layout = Layout(
-    'old_password'
-    'password1',
-    'password2',
-    FormActions(Submit('change', value="Change Now", css_class="signin button"))
+    Div(
+        'old_password',
+        'new_password1',
+        'new_password2',
+        FormActions(Submit('submit', value="Change Password", css_class="btn btn-default")),
+    css_class="col-md-3"),
 )
