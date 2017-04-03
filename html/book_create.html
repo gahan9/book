@@ -6,11 +6,12 @@
     }
 </style>
 {% load crispy_forms_tags %}
-<title>Add book | Book Inventory</title>
 
 {% block content %}
+    <div class="container">
+        <h2>{{ page_title }}</h2>
+    </div>
     <div class="container center-block">
-        <h2>Add Book</h2>
-                {% crispy form form.helper %}
+        {% crispy form form.helper %}
     </div>
 {% endblock %}
