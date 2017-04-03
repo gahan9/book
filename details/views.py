@@ -151,6 +151,10 @@ class ChangeProfilePassword(FormView):
         messages.success(self.request, 'Your Password is changed successfully.')
         return super(ChangeProfilePassword, self).form_valid(form)
 
+    def form_invalid(self, form):
+        # messages.error(self.request, form.errors)
+        return super(ChangeProfilePassword, self).form_invalid(form)
+
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         return super(ChangeProfilePassword, self).dispatch(*args, **kwargs)
