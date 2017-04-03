@@ -16,9 +16,52 @@ from django.views.generic.edit import CreateView, FormView, UpdateView, DeleteVi
     FormMixin
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User, Group
+from rest_framework import viewsets
 
+from .serializers import UserSerializer, GroupSerializer, AuthorSerializer, BookSerializer, PublisherSerializer
 from .forms import *
 from .models import *
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    queryset = User.objects.all().order_by('-date_joined')
+    serializer_class = UserSerializer
+
+
+class GroupViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
+
+
+class AuthorViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows authors to be viewed or edited
+    """
+    queryset = Author.objects.all()
+    serializer_class = AuthorSerializer
+
+
+class BookViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows authors to be viewed or edited
+    """
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+
+
+class PublisherViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows authors to be viewed or edited
+    """
+    queryset = Publisher.objects.all()
+    serializer_class = PublisherSerializer
 
 
 class Round(Func):
