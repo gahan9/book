@@ -11,7 +11,9 @@ from django.core.urlresolvers import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import ListView
-from django.views.generic.edit import CreateView, FormView, UpdateView, DeleteView
+from django.views.generic.detail import SingleObjectMixin
+from django.views.generic.edit import CreateView, FormView, UpdateView, DeleteView, \
+    FormMixin
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -24,7 +26,6 @@ class Round(Func):
     template = '%(function)s(%(expressions)s, 1)'
 
 
-# @login_required(login_url='login/')
 class HomePageView(LoginRequiredMixin, ListView, FormView):
     """	Show all data from database """
     login_url = 'login/'
@@ -48,11 +49,17 @@ class HomePageView(LoginRequiredMixin, ListView, FormView):
         return render(self.request, 'results.html', {'object_list': self.queryset})
 
 
-class BookCreate(SuccessMessageMixin, CreateView):
+class BookCreate(SuccessMessageMixin, CreateView, FormMixin):
     template_name = 'book_create.html'
     form_class = AddBookForm
     success_url = reverse_lazy('index')
     success_message = "Book '%(name)s' was added to Inventory successfully!"
+
+    def get_context_data(self, **kwargs):
+        kwargs['form'] = self.get_form()
+        context = {'page_title': 'Add New Book'}
+        context.update(kwargs)
+        return super(FormMixin, self).get_context_data(**context)
 
 
 class BookEditView(SuccessMessageMixin, UpdateView):
@@ -61,6 +68,12 @@ class BookEditView(SuccessMessageMixin, UpdateView):
     model = Book
     success_url = reverse_lazy('index')
     success_message = "Detail of '%(name)s' successfully updated!"
+
+    def get_context_data(self, **kwargs):
+        kwargs['form'] = self.get_form()
+        context = {'page_title': 'Edit Book'}
+        context.update(kwargs)
+        return super(FormMixin, self).get_context_data(**context)
 
 
 class BookDeleteView(SuccessMessageMixin, DeleteView):
@@ -106,9 +119,7 @@ def register(request):
             new_user.is_active = False
             new_user.save()
             new_user_token = activation_user().make_token(new_user)
-            # kwargs={'pk':new_user.id, 'token':new_user_token})
             host = request.get_host()
-            # var_url = 'http://'+ host + url
 
             send_mail("Activate YOur Account",
                       loader.render_to_string('user_activate.html',
@@ -117,9 +128,6 @@ def register(request):
                                                'domain': host,
                                                'user': new_user_name}), 'test.gahan@gmail.com', ['gahan@quixom.com', new_user_email])
             return HttpResponseRedirect('/login/')
-            # else:
-            #     x = [v[0] for k, v in form.errors.items()]
-            #     return HttpResponse(x)
     else:
         form = SignUpForm()
     return render(request, 'registration.html', {'form': form})
