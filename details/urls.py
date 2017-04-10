@@ -1,8 +1,8 @@
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.contrib.auth import views as auth_views
 
 from . import views
-from .forms import LoginForm
+from .forms import *
 
 urlpatterns = [
     url(r'^$', views.HomePageView.as_view(), name='index'),
@@ -12,5 +12,6 @@ urlpatterns = [
     url(r'^delete-entry/(?P<pk>\d+)/$', views.BookDeleteView.as_view(), name='delete_book'),
     url(r'^stock-availability', views.ToggleStockAvailability.as_view(), name='stock_change'),
     url(r'^book-create', views.BookCreate.as_view(), name='add_book'),
-    url(r'^book-edit/(?P<pk>\d+)/$', views.BookEditView.as_view(), name='edit_book')
+    url(r'^book-edit/(?P<pk>\d+)/$', views.BookEditView.as_view(), name='edit_book'),
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]

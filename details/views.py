@@ -11,12 +11,57 @@ from django.core.urlresolvers import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import ListView
-from django.views.generic.edit import CreateView, FormView, UpdateView, DeleteView
+from django.views.generic.detail import SingleObjectMixin
+from django.views.generic.edit import CreateView, FormView, UpdateView, DeleteView, \
+    FormMixin
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User, Group
+from rest_framework import viewsets
 
+from .serializers import UserSerializer, GroupSerializer, AuthorSerializer, BookSerializer, PublisherSerializer
 from .forms import *
 from .models import *
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    queryset = User.objects.all().order_by('-date_joined')
+    serializer_class = UserSerializer
+
+
+class GroupViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
+
+
+class AuthorViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows authors to be viewed or edited
+    """
+    queryset = Author.objects.all()
+    serializer_class = AuthorSerializer
+
+
+class BookViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows authors to be viewed or edited
+    """
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+
+
+class PublisherViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows authors to be viewed or edited
+    """
+    queryset = Publisher.objects.all()
+    serializer_class = PublisherSerializer
 
 
 class Round(Func):
@@ -24,7 +69,6 @@ class Round(Func):
     template = '%(function)s(%(expressions)s, 1)'
 
 
-# @login_required(login_url='login/')
 class HomePageView(LoginRequiredMixin, ListView, FormView):
     """	Show all data from database """
     login_url = 'login/'
@@ -48,11 +92,17 @@ class HomePageView(LoginRequiredMixin, ListView, FormView):
         return render(self.request, 'results.html', {'object_list': self.queryset})
 
 
-class BookCreate(SuccessMessageMixin, CreateView):
+class BookCreate(SuccessMessageMixin, CreateView, FormMixin):
     template_name = 'book_create.html'
     form_class = AddBookForm
     success_url = reverse_lazy('index')
     success_message = "Book '%(name)s' was added to Inventory successfully!"
+
+    def get_context_data(self, **kwargs):
+        kwargs['form'] = self.get_form()
+        context = {'page_title': 'Add New Book'}
+        context.update(kwargs)
+        return super(FormMixin, self).get_context_data(**context)
 
 
 class BookEditView(SuccessMessageMixin, UpdateView):
@@ -61,6 +111,12 @@ class BookEditView(SuccessMessageMixin, UpdateView):
     model = Book
     success_url = reverse_lazy('index')
     success_message = "Detail of '%(name)s' successfully updated!"
+
+    def get_context_data(self, **kwargs):
+        kwargs['form'] = self.get_form()
+        context = {'page_title': 'Edit Book'}
+        context.update(kwargs)
+        return super(FormMixin, self).get_context_data(**context)
 
 
 class BookDeleteView(SuccessMessageMixin, DeleteView):
@@ -106,9 +162,7 @@ def register(request):
             new_user.is_active = False
             new_user.save()
             new_user_token = activation_user().make_token(new_user)
-            # kwargs={'pk':new_user.id, 'token':new_user_token})
             host = request.get_host()
-            # var_url = 'http://'+ host + url
 
             send_mail("Activate YOur Account",
                       loader.render_to_string('user_activate.html',
@@ -117,9 +171,6 @@ def register(request):
                                                'domain': host,
                                                'user': new_user_name}), 'test.gahan@gmail.com', ['gahan@quixom.com', new_user_email])
             return HttpResponseRedirect('/login/')
-            # else:
-            #     x = [v[0] for k, v in form.errors.items()]
-            #     return HttpResponse(x)
     else:
         form = SignUpForm()
     return render(request, 'registration.html', {'form': form})
